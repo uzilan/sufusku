@@ -1,0 +1,41 @@
+table thead th {
+    height: 0px;
+    padding: 0px;
+}
+
+table {
+    width: 10px;
+}
+
+table tbody td.thick-top {
+    border-top-width: 4px;
+}
+
+table tbody td.thick-bottom {
+    border-bottom-width: 4px;
+}
+
+table tbody td.thick-right {
+    border-right-width: 4px;
+}
+
+table tbody td.thick-left {
+    border-left-width: 4px;
+}
+
+table tbody td {
+    padding: 0px;
+    text-align: center;
+}
+
+.input {
+    text-align: center;
+    width: 45px;
+    height: 45px;
+    font-size: 14pt;
+}
+
+.numbers {
+    text-align: center;
+    font-size: 7pt;
+}
