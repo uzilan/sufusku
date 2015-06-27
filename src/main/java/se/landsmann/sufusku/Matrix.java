@@ -25,37 +25,48 @@ public class Matrix {
                 Cell cell = getCell(row, col);
                 cell.setRow(getRow(row));
                 cell.setCol(getCol(col));
-                cell.setGroup(getGroup(findGroup(row, col)));
+                cell.setGroup(getGroup(row, col));
             }
         }
     }
 
-    private int findGroup(int row, int col) {
+    private List<Cell> getGroup(int row, int col) {
+
+        List<Cell> group = new ArrayList<>(9);
+
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
+
         if (row >= 0 && row < 3) {
-            if (col >= 0 && col < 3) {
-                return 1;
-            } else if (col >= 3 && col <= 6) {
-                return 4;
-            } else {
-                return 7;
-            }
+            minX = 0;
+            maxX = 3;
         } else if (row >= 3 && row < 6) {
-            if (col >= 0 && col < 3) {
-                return 2;
-            } else if (col >= 3 && col <= 6) {
-                return 5;
-            } else {
-                return 8;
-            }
+            minX = 3;
+            maxX = 6;
         } else {
-            if (col >= 0 && col < 3) {
-                return 3;
-            } else if (col >= 3 && col <= 6) {
-                return 6;
-            } else {
-                return 9;
+            minX = 6;
+            maxX = 9;
+        }
+
+        if (col >= 0 && col < 3) {
+            minY = 0;
+            maxY = 3;
+        } else if (col >= 3 && col < 6) {
+            minY = 3;
+            maxY = 6;
+        } else {
+            minY = 6;
+            maxY = 9;
+        }
+
+        for (int i = minX; i < maxX; i++) {
+            for (int j = minY; j < maxY; j++) {
+                group.add(getCell(i, j));
             }
         }
+        return group;
     }
 
     public Cell getCell(int row, int col) {
@@ -70,65 +81,6 @@ public class Matrix {
         return data.stream()
                 .map(row -> row.get(i))
                 .collect(Collectors.toList());
-    }
-
-    public List<Cell> getGroup(int i) {
-        int minX = 0;
-        int maxX = 0;
-        int minY = 0;
-        int maxY = 0;
-
-        switch (i) {
-            case 1:
-            case 2:
-            case 3:
-                minX = 0;
-                maxX = 2;
-                break;
-            case 4:
-            case 5:
-            case 6:
-                minX = 3;
-                maxX = 5;
-                break;
-            case 7:
-            case 8:
-            case 9:
-                minX = 6;
-                maxX = 8;
-                break;
-        }
-
-        switch (i) {
-            case 1:
-            case 4:
-            case 7:
-                minY = 0;
-                maxY = 2;
-                break;
-            case 2:
-            case 5:
-            case 8:
-                minX = 3;
-                maxX = 5;
-                break;
-            case 3:
-            case 6:
-            case 9:
-                minX = 6;
-                maxX = 8;
-                break;
-        }
-
-        List<Cell> group = new ArrayList<>(9);
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                group.add(getCell(x, y));
-            }
-        }
-
-        return group;
     }
 
     public int getCellValue(int row, int col) {
@@ -162,7 +114,7 @@ public class Matrix {
     public void reset() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                getCell(i,j).reset();
+                getCell(i, j).reset();
             }
         }
     }
