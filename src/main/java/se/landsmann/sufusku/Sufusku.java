@@ -2,6 +2,7 @@ package se.landsmann.sufusku;
 
 import static spark.Spark.get;
 import static spark.Spark.put;
+import static spark.SparkBase.port;
 import static spark.SparkBase.staticFileLocation;
 
 public class Sufusku {
@@ -9,6 +10,9 @@ public class Sufusku {
     private Matrix matrix = new Matrix();
 
     public Sufusku() {
+
+        port(80);
+
         staticFileLocation("/public");
 
         get("/reset", (request, response) -> {
