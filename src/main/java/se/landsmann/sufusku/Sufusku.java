@@ -11,7 +11,8 @@ public class Sufusku {
 
     public Sufusku() {
 
-        port(80);
+        String port = System.getenv("PORT");
+        port(port == null ? 4567 : Integer.parseInt(port));
 
         staticFileLocation("/public");
 
