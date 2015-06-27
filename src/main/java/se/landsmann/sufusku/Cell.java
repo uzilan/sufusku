@@ -1,4 +1,4 @@
-package se.landsmann.com;
+package se.landsmann.sufusku;
 
 import java.util.List;
 import java.util.SortedSet;

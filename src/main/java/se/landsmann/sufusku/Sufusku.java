@@ -1,4 +1,4 @@
-package se.landsmann.com;
+package se.landsmann.sufusku;
 
 import static spark.Spark.get;
 import static spark.Spark.put;

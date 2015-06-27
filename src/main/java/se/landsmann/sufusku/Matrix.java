@@ -1,4 +1,4 @@
-package se.landsmann.com;
+package se.landsmann.sufusku;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
