@@ -5,6 +5,7 @@ table thead th {
 
 table {
     width: 10px;
+    border-width: 0px;
 }
 
 table tbody td.thick-top {
@@ -38,4 +39,27 @@ table tbody td {
 .numbers {
     text-align: center;
     font-size: 7pt;
+}
+
+.axis-top {
+    border-width: 0px;
+}
+
+.axis-left {
+    border-width: 0px;
+    padding-right: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.log_holder {
+    height: 500px;
+    width: 200px;
+    overflow: auto;
+    border: gray groove 1px;
 }
