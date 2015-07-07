@@ -1,44 +1,42 @@
-function getClass(i, j) {
+function getClass(row, col) {
     var className = '';
-    if (i == 0) {
+    if (row == 0) {
         className += ' thick-top';
     }
-    if ((i + 1) % 3 == 0) {
+    if ((row + 1) % 3 == 0) {
         className += ' thick-bottom';
     }
-    if (j == 0) {
+    if (col == 0) {
         className += ' thick-left';
     }
-    if ((j + 1) % 3 == 0) {
+    if ((col + 1) % 3 == 0) {
         className += ' thick-right';
     }
     return className;
 }
 
-function update(data) {
-    $.each(data, function (i, r) {
-        $.each(r, function (j, c) {
-            var td = $('tbody')[0].children[i + 1].children[j + 1];
+function updateMatrix(data) {
+    $.each(data, function (row, r) {
+        $.each(r, function (col, cell) {
+            var td = $('tbody')[0].children[row + 1].children[col + 1];
             var input = td.children[0];
-            input.value = c.value == 0 ? '' : c.value;
+            input.value = cell.value == 0 ? '' : cell.value;
             var numbers = td.children[1];
-            numbers.innerHTML = c.numbers;
+            numbers.innerHTML = cell.numbers;
 
-            var rbColor = c.numbers.length == 9 ? 255 : 255 - Math.round(255 / c.numbers.length);
+            var rbColor = cell.numbers.length == 9 ? 255 : 255 - Math.round(255 / cell.numbers.length);
             var color = 'rgb(' + rbColor + ',255,' + rbColor + ')';
             td.style.backgroundColor = color;
             input.style.backgroundColor = color;
             numbers.style.backgroundColor = color;
         });
     });
-
-
 }
 
-function change(i, j) {
-    var cell = $('tbody')[0].children[i + 1].children[j + 1].children[0];
+function cellChanged(row, col) {
+    var cell = $('tbody')[0].children[row + 1].children[col + 1].children[0];
     var value = cell.value;
-    var data = {'row': i, 'col': j, 'value': value};
+    var data = {'row': row, 'col': col, 'value': value};
 
     $.ajax({
         url: 'matrix',
@@ -46,46 +44,13 @@ function change(i, j) {
         type: 'PUT',
         data: data,
         success: function (result) {
-            update(result);
+            updateMatrix(result);
         }
     });
 
-    $('#log').children('a').each(function() {
-        this.className = "list-group-item";
-    });
-
-    var logRow = $('<a/>', {
-        class: "list-group-item active",
-        href: "#",
-        html: "(" + getLetter(j) + "," + (i + 1) + ") : " + value
-    });
-    $('#log').append(logRow);
-
-    $('#log_holder').scrollTop($('#log_holder')[0].scrollHeight);
+    updateLog(row, col, value);
 }
 
-function getLetter(i) {
-    switch (i) {
-        case 0:
-            return 'a';
-        case 1:
-            return 'b';
-        case 2:
-            return 'c';
-        case 3:
-            return 'd';
-        case 4:
-            return 'e';
-        case 5:
-            return 'f';
-        case 6:
-            return 'g';
-        case 7:
-            return 'h';
-        case 8:
-            return 'i';
-    }
-}
 
 $(document).ready(function () {
 
@@ -98,61 +63,63 @@ $(document).ready(function () {
         success: function (data) {
 
             $('table').append('<tr class="axis"/>');
-            $.each([' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'], function (x, l) {
-                var letterTd = $('<td/>', {
-                    class: 'axis-top',
-                    html: l
-                });
 
-                $("table tr:last").append(letterTd);
-            });
+            addLetters();
 
-            $.each(data, function (i, r) {
+            $.each(data, function (row, r) {
 
                 $('table').append('<tr/>');
 
-                var numberTd = $('<td/>', {
-                    class: 'axis-left',
-                    html: i + 1
-                });
+                addNumber(row);
 
-                $("table tr:last").append(numberTd);
-
-                $.each(r, function (j, c) {
-
-
-                    var numbers = $('<div/>', {
-                        class: 'numbers',
-                        html: c.numbers
-                    });
-
-                    var input = $('<input/>', {
-                        type: 'number',
-                        class: 'input',
-                        html: c.value == 0 ? '' : c.value
-                    }).change(function () {
-                        change(i, j);
-                    });
-
-                    var td = $('<td/>', {
-                        class: getClass(i, j),
-                        html: input
-                    }).append(numbers);
-
-                    $("table tr:last").append(td);
-
+                $.each(r, function (col, cell) {
+                    addCell(row, col, cell);
                 });
             });
         }
     });
 });
 
-function reset() {
-    $.ajax({
-        url: 'reset',
-        dataType: 'json',
-        success: function (result) {
-            update(result);
-        }
+function addLetters() {
+    $.each([' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'], function (x, l) {
+        var letterTd = $('<td/>', {
+            class: 'axis-top',
+            html: l
+        });
+
+        $("table tr:last").append(letterTd);
     });
 }
+
+function addNumber(row) {
+    var numberTd = $('<td/>', {
+        class: 'axis-left',
+        html: row + 1
+    });
+
+    $("table tr:last").append(numberTd);
+}
+
+function addCell(row, col, cell) {
+    var numbers = $('<div/>', {
+        class: 'numbers',
+        html: cell.numbers
+    });
+
+    var input = $('<input/>', {
+        type: 'number',
+        class: 'input',
+        html: cell.value == 0 ? '' : cell.value
+    }).change(function () {
+        cellChanged(row, col);
+    });
+
+    var td = $('<td/>', {
+        class: getClass(row, col),
+        html: input
+    }).append(numbers);
+
+    $("table tr:last").append(td);
+}
+
+

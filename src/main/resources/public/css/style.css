@@ -63,3 +63,8 @@ input::-webkit-inner-spin-button {
     overflow: auto;
     border: gray groove 1px;
 }
+
+.bottons_holder {
+    padding-top: 10px;
+    text-align: center;
+}
