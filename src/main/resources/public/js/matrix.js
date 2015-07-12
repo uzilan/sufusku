@@ -24,18 +24,25 @@ function updateMatrix(data) {
             var numbers = td.children[1];
             numbers.innerHTML = cell.numbers;
 
-            var rbColor = cell.numbers.length == 9 ? 255 : 255 - Math.round(255 / cell.numbers.length);
-            var color = 'rgb(' + rbColor + ',255,' + rbColor + ')';
-
-            if (cell.isCrazy) {
-                color = 'lightcoral';
-            }
-
-            td.style.backgroundColor = color;
-            input.style.backgroundColor = color;
-            numbers.style.backgroundColor = color;
+            setCellColor(cell, td, input, numbers);
         });
     });
+}
+
+function setCellColor(cell, td, input, numbers) {
+    var numbersLength = cell.numbers.length;
+    var rbColor = numbersLength == 9 ? 255 : 255 - Math.round(255 / numbersLength);
+    var color = 'rgb(' + rbColor + ',255,' + rbColor + ')';
+
+    if (cell.isCrazy) {
+        color = 'lightcoral';
+    } else if (numbersLength == 1 && input.value == '') {
+        color = 'deepskyblue';
+    }
+
+    td.style.backgroundColor = color;
+    input.style.backgroundColor = color;
+    numbers.style.backgroundColor = color;
 }
 
 function cellChanged(row, col) {
@@ -121,7 +128,7 @@ function addCell(row, col, cell) {
         cellChanged(row, col);
     }).on('input', function () {
         if (this.value < 1 || this.value > 9) {
-            this.value= this.value.substr(0,1);
+            this.value = this.value.substr(0, 1);
         }
     });
 
