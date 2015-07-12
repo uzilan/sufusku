@@ -9,12 +9,21 @@ import java.util.stream.IntStream;
 public class Cell {
 
     private int value;
+
+    private int rowIndex;
+    private int colIndex;
+    private int groupIndex;
     private List<Cell> row;
     private List<Cell> col;
     private List<Cell> group;
     private SortedSet<Integer> numbers;
+    private boolean isCrazy;
 
-    public Cell() {
+    public Cell(int rowIndex, int colIndex, int groupIndex) {
+        this.rowIndex = rowIndex;
+        this.colIndex = colIndex;
+        this.groupIndex = groupIndex;
+
         reset();
     }
 
@@ -30,14 +39,24 @@ public class Cell {
 
     public void setValue(int value) {
         if (this.value != 0) {
-            row.forEach(r -> r.addNumber(this.value));
-            col.forEach(r -> r.addNumber(this.value));
-            group.forEach(r -> r.addNumber(this.value));
+            if (!valueExists(row, this.value)) {
+                row.stream().forEach(r -> r.addNumber(this.value));
+            }
+            if (!valueExists(col, this.value)) {
+                col.forEach(r -> r.addNumber(this.value));
+            }
+            if (!valueExists(group, this.value)) {
+                group.forEach(r -> r.addNumber(this.value));
+            }
         }
         row.forEach(r -> r.removeNumber(value));
         col.forEach(r -> r.removeNumber(value));
         group.forEach(r -> r.removeNumber(value));
         this.value = value;
+    }
+
+    private boolean valueExists(List<Cell> cells, int value) {
+        return cells.stream().anyMatch(c -> c.getValue() == value);
     }
 
     public List<Cell> getRow() {
@@ -76,5 +95,25 @@ public class Cell {
 
     private void addNumber(int number) {
         numbers.add(number);
+    }
+
+    public boolean isCrazy() {
+        return isCrazy;
+    }
+
+    public void setIsCrazy(boolean isCrazy) {
+        this.isCrazy = isCrazy;
+    }
+
+    public int getRowIndex() {
+        return rowIndex;
+    }
+
+    public int getColIndex() {
+        return colIndex;
+    }
+
+    public int getGroupIndex() {
+        return groupIndex;
     }
 }

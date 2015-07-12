@@ -8,6 +8,11 @@ table {
     border-width: 0px;
 }
 
+table tbody td {
+    padding: 0px;
+    text-align: center;
+}
+
 table tbody td.thick-top {
     border-top-width: 4px;
 }
@@ -22,11 +27,6 @@ table tbody td.thick-right {
 
 table tbody td.thick-left {
     border-left-width: 4px;
-}
-
-table tbody td {
-    padding: 0px;
-    text-align: center;
 }
 
 .input {

@@ -26,6 +26,11 @@ function updateMatrix(data) {
 
             var rbColor = cell.numbers.length == 9 ? 255 : 255 - Math.round(255 / cell.numbers.length);
             var color = 'rgb(' + rbColor + ',255,' + rbColor + ')';
+
+            if (cell.isCrazy) {
+                color = 'lightcoral';
+            }
+
             td.style.backgroundColor = color;
             input.style.backgroundColor = color;
             numbers.style.backgroundColor = color;
@@ -108,10 +113,16 @@ function addCell(row, col, cell) {
 
     var input = $('<input/>', {
         type: 'number',
+        min: 1,
+        max: 9,
         class: 'input',
         html: cell.value == 0 ? '' : cell.value
     }).change(function () {
         cellChanged(row, col);
+    }).on('input', function () {
+        if (this.value < 1 || this.value > 9) {
+            this.value= this.value.substr(0,1);
+        }
     });
 
     var td = $('<td/>', {
