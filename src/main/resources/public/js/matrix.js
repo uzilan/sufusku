@@ -16,7 +16,9 @@ function getClass(row, col) {
 }
 
 function updateMatrix(data) {
-    $.each(data, function (row, r) {
+
+
+    $.each(data.matrix, function (row, r) {
         $.each(r, function (col, cell) {
             var td = $('tbody')[0].children[row + 1].children[col + 1];
             var input = td.children[0];
@@ -57,10 +59,9 @@ function cellChanged(row, col) {
         data: data,
         success: function (result) {
             updateMatrix(result);
+            updateLog();
         }
     });
-
-    updateLog(row, col, value);
 }
 
 
@@ -78,7 +79,7 @@ $(document).ready(function () {
 
             addLetters();
 
-            $.each(data, function (row, r) {
+            $.each(data.matrix, function (row, r) {
 
                 $('table').append('<tr/>');
 

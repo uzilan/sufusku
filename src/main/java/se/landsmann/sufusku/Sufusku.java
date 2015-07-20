@@ -8,6 +8,7 @@ import static spark.SparkBase.staticFileLocation;
 public class Sufusku {
 
     private Matrix matrix = new Matrix();
+    private Log log = new Log();
 
     public Sufusku() {
 
@@ -30,8 +31,13 @@ public class Sufusku {
             int col = Integer.valueOf(request.queryParams("col"));
             int value = Integer.valueOf(request.queryParams("value"));
             matrix.setCellValue(row, col, value);
+            log.add(row, col, value, matrix);
             return matrix.toJson();
         });
+
+        get("/log", (request, response) ->
+                        log.toJson()
+        );
     }
 
     public static void main(String[] args) {

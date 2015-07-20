@@ -1,4 +1,4 @@
-function updateLog(i, j, value) {
+function updateLog() {
 
     var log = $('#log');
     var logHolder = $('#log_holder');
@@ -10,7 +10,8 @@ function updateLog(i, j, value) {
     var logRow = $('<a/>', {
         class: "list-group-item active",
         href: "#",
-        html: "(" + getLetter(j) + "," + (i + 1) + ") : " + value
+        html: "(" + getLetter(j) + "," + (i + 1) + ") : " + value,
+        id: "version-" + version
     });
     log.append(logRow);
 

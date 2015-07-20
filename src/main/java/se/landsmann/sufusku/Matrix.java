@@ -130,7 +130,8 @@ public class Matrix {
     }
 
     public void setCellValue(int row, int col, int value) {
-        getCell(row, col).setValue(value);
+        Cell cell = getCell(row, col);
+        cell.setValue(value);
         checkMatrixForCraziness();
     }
 
@@ -162,6 +163,7 @@ public class Matrix {
     }
 
     public String toJson() {
+
         JSONArray rows = new JSONArray();
 
         for (int i = 0; i < 9; i++) {
@@ -179,7 +181,10 @@ public class Matrix {
             }
         }
 
-        return rows.toString();
+        JSONObject json = new JSONObject();
+        json.put("matrix", rows);
+
+        return json.toString();
     }
 
     public void reset() {
