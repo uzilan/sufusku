@@ -3,17 +3,26 @@ function updateLog() {
     var log = $('#log');
     var logHolder = $('#log_holder');
 
-    log.children('a').each(function () {
-        this.className = "list-group-item";
+    resetLog();
+
+    $.ajax({
+        url: 'log',
+        dataType: 'json',
+        type: 'GET',
+        success: function (result) {
+            var len = result.length;
+            $.each(result, function (i, r) {
+                var logRow = $('<a/>', {
+                    class: i == len - 1 ? "list-group-item active" : "list-group-item",
+                    href: "#",
+                    html: r.coordinates + ": " + r.value
+                });
+                log.append(logRow);
+            });
+        }
     });
 
-    var logRow = $('<a/>', {
-        class: "list-group-item active",
-        href: "#",
-        html: "(" + getLetter(j) + "," + (i + 1) + ") : " + value,
-        id: "version-" + version
-    });
-    log.append(logRow);
+    $("#log a:last").className = "list-group-item active";
 
     logHolder.scrollTop(logHolder[0].scrollHeight);
 }

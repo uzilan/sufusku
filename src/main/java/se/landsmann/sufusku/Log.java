@@ -15,7 +15,7 @@ public class Log {
     }
 
     public void add(int row, int col, int value, Matrix matrix) {
-        Coordinates coordinates = new Coordinates((char) ('a' + col - 1), row);
+        Coordinates coordinates = new Coordinates((char) ('a' + col), row);
         LogItem logItem = new LogItem(matrix, coordinates, value);
 
         log.put(logItem.getIndex(), logItem);
@@ -28,7 +28,8 @@ public class Log {
                 .forEach(e -> {
                     JSONObject obj = new JSONObject();
                     obj.put("index", e.getKey());
-                    obj.put("logItem", e.getValue().toJson());
+                    obj.put("coordinates", e.getValue().getCoordinates().toString());
+                    obj.put("value", e.getValue().getValue());
                     rows.put(obj);
                 });
         return rows.toString();

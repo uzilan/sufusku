@@ -12,6 +12,6 @@ public class Coordinates {
 
     @Override
     public String toString() {
-        return "(" + letter + "," + number + ")";
+        return "(" + letter + "," + (number + 1) + ")";
     }
 }

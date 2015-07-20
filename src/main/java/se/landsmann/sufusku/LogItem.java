@@ -4,13 +4,13 @@ import org.json.JSONObject;
 
 public class LogItem {
 
-    private int index = 1;
+    private static int index = 0;
     private Matrix matrix;
     private Coordinates coordinates;
     private int value;
 
     public LogItem(Matrix matrix, Coordinates coordinates, int value) {
-        this.index++;
+        index++;
         this.matrix = matrix;
         this.coordinates = coordinates;
         this.value = value;
