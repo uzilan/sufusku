@@ -38,14 +38,14 @@ public class Cell {
     }
 
     public void setValue(int value) {
-        if (this.value != 0) {
-            if (!valueExists(row, this.value)) {
-                row.stream().forEach(r -> r.addNumber(this.value));
+        if (value == 0 || this.value != 0) {
+            if (!valueExists(row, this)) {
+                row.forEach(r -> r.addNumber(this.value));
             }
-            if (!valueExists(col, this.value)) {
+            if (!valueExists(col, this)) {
                 col.forEach(r -> r.addNumber(this.value));
             }
-            if (!valueExists(group, this.value)) {
+            if (!valueExists(group, this)) {
                 group.forEach(r -> r.addNumber(this.value));
             }
         }
@@ -55,8 +55,11 @@ public class Cell {
         this.value = value;
     }
 
-    private boolean valueExists(List<Cell> cells, int value) {
-        return cells.stream().anyMatch(c -> c.getValue() == value);
+    private boolean valueExists(List<Cell> cells, Cell cell) {
+
+        return cells.stream()
+                .filter(c -> c != cell)
+                .anyMatch(c -> c.getValue() == cell.value);
     }
 
     public List<Cell> getRow() {

@@ -50,7 +50,7 @@ function setCellColor(cell, td, input, numbers) {
 function cellChanged(row, col) {
     var cell = $('tbody')[0].children[row + 1].children[col + 1].children[0];
     var value = cell.value;
-    var data = {'row': row, 'col': col, 'value': value};
+    var data = {'row': row, 'col': col, 'value': value == '' ? 0 : value};
 
     $.ajax({
         url: 'matrix',
