@@ -38,6 +38,11 @@ public class Sufusku {
         get("/log", (request, response) ->
                         log.toJson()
         );
+
+        put("log", (request, response) -> {
+            int logIndex = Integer.valueOf(request.queryParams("logIndex"));
+            return log.getLogItem(logIndex).getMatrix().toJson();
+        });
     }
 
     public static void main(String[] args) {

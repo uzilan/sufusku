@@ -15,8 +15,12 @@ function updateLog() {
                 var logRow = $('<a/>', {
                     class: i == len - 1 ? "list-group-item active" : "list-group-item",
                     href: "#",
-                    html: r.coordinates + ": " + r.value
+                    html: r.coordinates + ": " + r.value,
+                    id: "log_" + i
+                }).click(function () {
+                    logSelected(logRow[0]);
                 });
+
                 log.append(logRow);
             });
         }
@@ -25,6 +29,25 @@ function updateLog() {
     $("#log a:last").className = "list-group-item active";
 
     logHolder.scrollTop(logHolder[0].scrollHeight);
+}
+
+function logSelected(logRow) {
+    $('#log > a').each(function (i, r) {
+        r.className = "list-group-item"
+    });
+    logRow.className = "list-group-item active";
+
+    var data = {'logIndex': logRow.id.substr(4)};
+
+    $.ajax({
+        url: 'log',
+        dataType: 'json',
+        type: 'PUT',
+        data: data,
+        success: function (result) {
+            updateMatrix(result);
+        }
+    });
 }
 
 function getLetter(i) {

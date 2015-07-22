@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public class LogItem {
 
-    private static int index = 0;
+    private static int index = -1;
     private Matrix matrix;
     private Coordinates coordinates;
     private int value;

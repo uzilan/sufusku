@@ -21,6 +21,10 @@ public class Log {
         log.put(logItem.getIndex(), logItem);
     }
 
+    public LogItem getLogItem(int index) {
+        return log.get(index);
+    }
+
     public String toJson() {
         JSONArray rows = new JSONArray();
 
