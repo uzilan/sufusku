@@ -1,5 +1,6 @@
 package se.landsmann.sufusku;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.json.JSONObject;
 
 public class LogItem {
@@ -11,7 +12,7 @@ public class LogItem {
 
     public LogItem(Matrix matrix, Coordinates coordinates, int value) {
         index++;
-        this.matrix = matrix;
+        this.matrix = SerializationUtils.clone(matrix);
         this.coordinates = coordinates;
         this.value = value;
     }

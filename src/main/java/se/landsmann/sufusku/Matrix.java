@@ -3,11 +3,14 @@ package se.landsmann.sufusku;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Matrix {
+public class Matrix implements Serializable {
+
+    private static final long serialVersionUID = 42826514020129216L;
 
     private List<List<Cell>> data = new ArrayList<>(9);
 
