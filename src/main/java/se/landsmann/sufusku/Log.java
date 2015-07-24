@@ -9,6 +9,7 @@ import java.util.Map;
 public class Log {
 
     private Map<Integer, LogItem> log = new HashMap<>();
+    private int currentIndex;
 
     public void reset() {
         log.clear();
@@ -19,10 +20,15 @@ public class Log {
         LogItem logItem = new LogItem(matrix, coordinates, value);
 
         log.put(logItem.getIndex(), logItem);
+        currentIndex = logItem.getIndex();
     }
 
     public LogItem getLogItem(int index) {
         return log.get(index);
+    }
+
+    public LogItem getCurrentIndexLogItem() {
+        return log.get(currentIndex);
     }
 
     public String toJson() {
@@ -37,5 +43,18 @@ public class Log {
                     rows.put(obj);
                 });
         return rows.toString();
+    }
+
+    public void setCurrentIndex(int currentIndex) {
+        this.currentIndex = currentIndex;
+    }
+
+    public boolean isLogIndexPointingToLatest() {
+        return log.isEmpty() ||
+                log.keySet().stream().mapToInt(Integer::intValue).max().getAsInt() == currentIndex;
+    }
+
+    public void resetToCurrentindex() {
+        log.entrySet().removeIf(e -> e.getKey() > currentIndex);
     }
 }

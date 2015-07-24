@@ -9,8 +9,9 @@ import java.util.stream.IntStream;
 
 public class Cell implements Serializable {
 
-    private int value;
+    private static final long serialVersionUID = -6672939048719366414L;
 
+    private int value;
     private int rowIndex;
     private int colIndex;
     private int groupIndex;
@@ -57,7 +58,6 @@ public class Cell implements Serializable {
     }
 
     private boolean valueExists(List<Cell> cells, Cell cell) {
-
         return cells.stream()
                 .filter(c -> c != cell)
                 .anyMatch(c -> c.getValue() == cell.value);

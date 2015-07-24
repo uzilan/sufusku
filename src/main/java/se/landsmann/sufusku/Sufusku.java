@@ -1,5 +1,7 @@
 package se.landsmann.sufusku;
 
+import org.apache.commons.lang3.SerializationUtils;
+
 import static spark.Spark.get;
 import static spark.Spark.put;
 import static spark.SparkBase.port;
@@ -19,6 +21,7 @@ public class Sufusku {
 
         get("/reset", (request, response) -> {
             matrix.reset();
+            log.setCurrentIndex(0);
             return matrix.toJson();
         });
 
@@ -30,6 +33,12 @@ public class Sufusku {
             int row = Integer.valueOf(request.queryParams("row"));
             int col = Integer.valueOf(request.queryParams("col"));
             int value = Integer.valueOf(request.queryParams("value"));
+
+            if (!log.isLogIndexPointingToLatest()) {
+                matrix = SerializationUtils.clone(log.getCurrentIndexLogItem().getMatrix());
+                log.resetToCurrentindex();
+            }
+
             matrix.setCellValue(row, col, value);
             log.add(row, col, value, matrix);
             return matrix.toJson();
@@ -39,8 +48,9 @@ public class Sufusku {
                         log.toJson()
         );
 
-        put("log", (request, response) -> {
+        put("/log", (request, response) -> {
             int logIndex = Integer.valueOf(request.queryParams("logIndex"));
+            log.setCurrentIndex(logIndex);
             return log.getLogItem(logIndex).getMatrix().toJson();
         });
     }
