@@ -1,1 +1,0 @@
-web: ./target/install/sufusku/bin/sufusku

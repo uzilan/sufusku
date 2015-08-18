@@ -39,6 +39,7 @@ table tbody td.thick-left {
 .numbers {
     text-align: center;
     font-size: 7pt;
+    height: 10px;
 }
 
 .axis-top {

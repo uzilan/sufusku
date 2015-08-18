@@ -115,7 +115,7 @@ function addNumber(row) {
 
 function addCell(row, col, cell) {
     var numbers = $('<div/>', {
-        class: 'numbers',
+            class: 'numbers',
         html: cell.numbers
     });
 
