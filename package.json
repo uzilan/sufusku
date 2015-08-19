@@ -1,7 +1,7 @@
 {
   "name": "sufusku",
   "version": "0.0.1",
-  "description": "Sufusku - cheat your annoying sudoku!",
+  "description": "Sufusku - makes your annoying sudoku easier",
   "repository": {
     "type": "git",
     "url": "git://github.com/uzilan/sufusku.git"

@@ -1,12 +1,12 @@
 module.exports = {
-    //styles: {
-    //    files: ['<%= app %>/styles/*.scss', '<%= app %>/areas/**/*.scss', '<%= app %>/common/**/*.scss'],
-    //    tasks: ['sass_globbing', 'sass', 'clean:sass', 'cssmin'],
-    //    options: {
-    //        livereload: true,
-    //        livereloadOnError: false
-    //    }
-    //},
+    styles: {
+        files: ['<%= appstyles %>/*.css'],
+        tasks: ['cssmin'],
+        options: {
+            livereload: true,
+            livereloadOnError: false
+        }
+    },
     scripts: {
         files: ['<%= app %>/**/*.js'],
         tasks: ['ngAnnotate', 'uglify'],
