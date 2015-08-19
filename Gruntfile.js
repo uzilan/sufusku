@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 
     require('time-grunt')(grunt);
 
-    grunt.registerTask('build', ['clean:dist', 'ngAnnotate:application', 'uglify', 'htmlmin']);
+    grunt.registerTask('build', ['clean:dist', 'ngAnnotate:application', 'uglify', 'htmlmin', 'cssmin']);
 
     grunt.registerTask('serve', ['build', 'copy:serve', 'concat:components', 'connect:livereload', 'watch']);
 

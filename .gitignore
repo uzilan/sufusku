@@ -1,4 +1,4 @@
 target
 node_modules
-src/bower_components
 dist
+bower_components
