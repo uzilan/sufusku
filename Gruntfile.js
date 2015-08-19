@@ -1,22 +1,26 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+    var appname = require('./package.json').name;
 
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    uglify: {
-      my_target: {
-        files: [{
-          expand: true,
-          cwd: 'src',
-          src: '**/*.js',
-          dest: 'dest'
-        }]
-      }
-    }
-  });
+    require('load-grunt-config')(grunt, {
+        // data passed into config.  Can use with <%= dist %>
+        data: {
+            dist: 'dist/' + appname,
+            app: 'src',
+            distscripts: 'dist/' + appname + '/scripts',
+            diststyles: 'dist/' + appname + '/styles',
+            disthtml: 'dist/' + appname,
+            disttest: 'dist/' + appname + '/test',
+            appstyles: 'src/css'
+        }
+    });
 
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+    require('time-grunt')(grunt);
 
-  grunt.loadNpmTasks('grunt-serve');
+    grunt.registerTask('build', ['clean:dist', 'ngAnnotate:application', 'uglify', 'htmlmin']);
 
-  grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('serve', ['build', 'copy:serve', 'concat:components', 'connect:livereload', 'watch']);
+
+    grunt.registerTask('default', function () {
+        grunt.task.run(['build']);
+    });
 };
