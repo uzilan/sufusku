@@ -84,14 +84,49 @@ var Matrix = function () {
         return {minX: minX, maxX: maxX, minY: minY, maxY: maxY}
     }
 
-
     var removeNumberFromCell = function (cell, value) {
         cell.numbers = cell.numbers.replace(new RegExp(value), '');
     };
 
+
+    function checkIfCellIsCrazy(matrix, row, col) {
+        var value = matrix[row][col].value;
+        var isCrazy = false;
+        var i, cell;
+
+        if (value === '') {
+            return false;
+        }
+
+        for (i = 0; i < 9; i++) {
+            cell = matrix[row][i];
+            if (cell.col !== col && cell.value === value) {
+                isCrazy = true;
+            }
+        }
+
+        for (i = 0; i < 9; i++) {
+            cell = matrix[i][col];
+            if (cell.row !== row && cell.value === value) {
+                isCrazy = true;
+            }
+        }
+
+        var group = getGroup(matrix, row, col);
+
+        for (i = 0; i < 9; i++) {
+            cell = group[i];
+            if (cell.row !== row && cell.col !== col && cell.value === value) {
+                isCrazy = true;
+            }
+        }
+
+        return isCrazy;
+    }
+
     this.setValue = function (row, col, value) {
 
-
+        var cell;
         for (cell = 0; cell < 9; cell++) {
             removeNumberFromCell(this.matrix[row][cell], value);
         }
@@ -105,5 +140,13 @@ var Matrix = function () {
         for (cell = 0; cell < 9; cell++) {
             removeNumberFromCell(group[cell], value);
         }
-    }
+    };
+
+    this.checkMatrixForCraziness = function () {
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 9; j++) {
+                this.matrix[i][j].isCrazy = checkIfCellIsCrazy(this.matrix, i, j);
+            }
+        }
+    };
 };
