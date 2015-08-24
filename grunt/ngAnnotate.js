@@ -5,7 +5,7 @@ module.exports = {
     application: {
         files: {
             '<%= distscripts %>/app.js': [
-                '<%= app %>/**/*.js'
+                '<%= app %>/**/*.js', '!<%= app %>/server.js'
             ]
         }
     }
