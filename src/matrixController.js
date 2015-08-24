@@ -11,15 +11,24 @@ angular.module('sufusku', [])
 
         $scope.getColor = function(cell) {
             var numbersLength = cell.numbers.length;
-            var rbColor = numbersLength == 9 ? 255 : 255 - Math.round(255 / numbersLength);
+
+            var rbColor;
+            if (numbersLength === 0) {
+                rbColor = 0;
+            } else if (numbersLength === 9) {
+                rbColor = 255;
+            } else {
+                rbColor = 255 - Math.round(255 / numbersLength);
+            }
+            
             var color = 'rgb(' + rbColor + ',255,' + rbColor + ')';
 
             if (cell.isCrazy) {
                 color = 'lightcoral';
-            } /*else if (numbersLength == 1 && input.value == '') {
+            } else if (numbersLength === 1 && cell.value === '') {
                 color = 'deepskyblue';
             }
-*/
+
            return color;
         };
 
