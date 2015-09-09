@@ -1,11 +1,21 @@
 module.exports = {
     target: {
-        files: [{
-            expand: true,
-            cwd: '<%= appstyles %>',
-            src: ['*.css', '!*.min.css'],
-            dest: '<%= diststyles %>',
-            ext: '.min.css'
-        }]
+        files: [
+            {
+                expand: true,
+                cwd: '<%= appstyles %>',
+                src: ['*.css', '!*.min.css'],
+                dest: '<%= diststyles %>',
+                ext: '.css'
+            }, {
+                expand: true,
+                cwd: 'bower_components/bootstrap/dist/css/',
+                src: ['bootstrap.min.css'],
+                dest: '<%= diststyles %>',
+                ext: '.min.css'
+            }
+
+
+        ]
     }
 }

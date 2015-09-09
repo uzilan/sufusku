@@ -16,7 +16,6 @@ table thead th {
 }
 
 table {
-    width: 10px;
     border-width: 0px;
 }
 
@@ -48,11 +47,50 @@ table tbody td.thick-left {
     font-size: 14pt;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}
+
 .numbers {
     text-align: center;
-    font-size: 7pt;
+    font-size: 6pt;
     height: 10px;
 }
+
+/* iphone 5 */
+@media only screen
+and (max-device-width: 568px) {
+    .input {
+        width: 26px;
+        height: 26px;
+        font-size: 14pt;
+    }
+    .numbers {
+        font-size: 3pt;
+        height: 10px;
+    }
+}
+
+/* iphone 6 */
+@media only screen
+and (max-device-width: 667px) {
+    .input {
+        width: 26px;
+        height: 26px;
+        font-size: 14pt;
+    }
+    .numbers {
+        font-size: 4pt;
+        height: 10px;
+    }
+}
+
 
 .axis-top {
     border-width: 0px;
@@ -71,10 +109,17 @@ input::-webkit-inner-spin-button {
 }
 
 .log_holder {
-    height: 500px;
-    width: 200px;
-    overflow: auto;
+    max-height: 515px;
+    width: 80px;
+    overflow-y: scroll;
     border: gray groove 1px;
+    text-align: center;
+}
+
+.log-header {
+    width: 80px;
+    font-weight: bolder;
+    text-align: center;
 }
 
 .bottons_holder {

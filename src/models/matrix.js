@@ -84,17 +84,13 @@ var Matrix = function () {
         return {minX: minX, maxX: maxX, minY: minY, maxY: maxY}
     }
 
-    var removeNumberFromCell = function (cell, value) {
-        cell.numbers = cell.numbers.replace(new RegExp(value), '');
-    };
-
 
     function checkIfCellIsCrazy(matrix, row, col) {
         var value = matrix[row][col].value;
         var isCrazy = false;
         var i, cell;
 
-        if (value === '') {
+        if (value === '' || value === null) {
             return false;
         }
 
@@ -124,23 +120,45 @@ var Matrix = function () {
         return isCrazy;
     }
 
-    this.setValue = function (row, col, value) {
+    this.setValue = function (row, col, value, oldValue) {
 
-        var cell;
-        for (cell = 0; cell < 9; cell++) {
-            removeNumberFromCell(this.matrix[row][cell], value);
-        }
-
-        for (cell = 0; cell < 9; cell++) {
-            removeNumberFromCell(this.matrix[cell][col], value);
+        var todo = 'remove';
+        if (value === null) {
+            todo = 'add';
         }
 
         var group = getGroup(this.matrix, row, col);
 
+        var cell;
         for (cell = 0; cell < 9; cell++) {
-            removeNumberFromCell(group[cell], value);
+            if (todo === 'remove') {
+                removeNumberFromCell(this.matrix[row][cell], value);
+                removeNumberFromCell(this.matrix[cell][col], value);
+                removeNumberFromCell(group[cell], value);
+            } else {
+                addNumberToCell(this.matrix[row][cell], oldValue);
+                addNumberToCell(this.matrix[cell][col], oldValue);
+                addNumberToCell(group[cell], oldValue);
+            }
         }
     };
+
+    var removeNumberFromCell = function (cell, number) {
+        cell.numbers = cell.numbers.replace(new RegExp(number), '');
+    };
+
+    var addNumberToCell = function (cell, number) {
+        cell.numbers += number;
+        var numberArray = [];
+        for (var i = 0; i < cell.numbers.length; i++) {
+            numberArray.push(cell.numbers[i]);
+        }
+        cell.numbers = numberArray.sort().filter(onlyUnique).join('');
+    };
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
 
     this.checkMatrixForCraziness = function () {
         for (var i = 0; i < 9; i++) {
@@ -148,5 +166,9 @@ var Matrix = function () {
                 this.matrix[i][j].isCrazy = checkIfCellIsCrazy(this.matrix, i, j);
             }
         }
+    };
+
+    Array.prototype.clone = function() {
+        return this.slice(0);
     };
 };

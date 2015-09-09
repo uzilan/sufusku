@@ -4,7 +4,8 @@ module.exports = {
     },
     components: {
         src: [
-            '<%= app %>/../bower_components/angular/angular.min.js'
+            '<%= app %>/../bower_components/angular/angular.min.js',
+            '<%= app %>/../bower_components/bootstrap/dist/bootstrap.min.js'
         ],
         dest: '<%= dist %>/scripts/components.js'
     }

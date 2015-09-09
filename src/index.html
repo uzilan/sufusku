@@ -1,15 +1,30 @@
 <!doctype html>
 <html ng-app="sufusku">
 <head>
-    <link rel="stylesheet" href="styles/style.min.css"/>
+    <link rel="stylesheet" href="styles/bootstrap.min.css"/>
+    <link rel="stylesheet" href="styles/style.css"/>
 </head>
 <body>
-<div ng-controller="MatrixController as matrixController">
-
-    <h1>Sufusku</h1>
-    <h4>makes your annoying sudoku easier</h4>
-
-    <div matrix></div>
+<div class="container-fluid text-left" ng-controller="MatrixController as matrixController">
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <h1>Sufusku</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <h4>makes your annoying sudoku easier</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4 col-md-4">
+            <div ul-matrix></div>
+        </div>
+        <div class="col-xs-1 col-md-1">
+            <div class="log-header">Log</div>
+            <div ul-log></div>
+        </div>
+    </div>
 
 </div>
 
