@@ -4,8 +4,8 @@ var Matrix = function () {
 
     for (row = 0; row < 9; row++) {
         this.matrix[row] = new Array(9);
-        for (cell = 0; cell < 9; cell++) {
-            this.matrix[row][cell] = new Cell(row, cell, getGroupIndex(row, cell));
+        for (col = 0; col < 9; col++) {
+            this.matrix[row][col] = new Cell(row, col, getGroupIndex(row, col));
         }
     }
 
@@ -161,14 +161,14 @@ var Matrix = function () {
     }
 
     this.checkMatrixForCraziness = function () {
-        for (var i = 0; i < 9; i++) {
-            for (var j = 0; j < 9; j++) {
-                this.matrix[i][j].isCrazy = checkIfCellIsCrazy(this.matrix, i, j);
+        for (var row = 0; row < 9; row++) {
+            for (var col = 0; col < 9; col++) {
+                this.matrix[row][col].isCrazy = checkIfCellIsCrazy(this.matrix, row, col);
             }
         }
     };
 
-    Array.prototype.clone = function() {
-        return this.slice(0);
-    };
+    this.clone = function () {
+        return _.cloneDeep(this.matrix);
+    }
 };

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="styles/style.css"/>
 </head>
 <body>
-<div class="container-fluid text-left" ng-controller="MatrixController as matrixController">
+<div class="container-fluid text-left">
     <div class="row">
         <div class="col-xs-12 col-md-12">
             <h1>Sufusku</h1>
@@ -18,11 +18,11 @@
     </div>
     <div class="row">
         <div class="col-xs-4 col-md-4">
-            <div ul-matrix></div>
+            <div ul-matrix ng-controller="MatrixController as matrixController"></div>
         </div>
         <div class="col-xs-1 col-md-1">
             <div class="log-header">Log</div>
-            <div ul-log></div>
+            <div ul-log ng-controller="LogController as logController"></div>
         </div>
     </div>
 

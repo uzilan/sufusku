@@ -2,8 +2,8 @@ sufusku.factory('LogService', function () {
 
     var vm = this;
 
-    vm.addItem = function (log, row, col, value) {
-        log.addItem(row, col, value);
+    vm.addItem = function (log, row, col, value, matrix) {
+        log.addItem(row, col, value, matrix);
     };
 
     return {
