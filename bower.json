@@ -4,6 +4,7 @@
   "dependencies": {
     "jquery": "1.11.0",
     "bootstrap": "4.0.0-alpha",
-    "angular": "1.4.6-build.4218+sha.9d2cc83"
+    "angular": "1.4.6-build.4218+sha.9d2cc83",
+    "angular-bootstrap": "0.13.4"
   }
 }

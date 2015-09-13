@@ -4,10 +4,12 @@ body {
 
 h1 {
     margin-bottom: 0px;
+    color: #000066;
 }
 
 h4 {
     margin-top: 0px;
+    color: #000088;
 }
 
 table thead th {
@@ -112,7 +114,7 @@ input::-webkit-inner-spin-button {
     max-height: 515px;
     width: 80px;
     overflow-y: scroll;
-    border: gray groove 1px;
+    border: #000066 groove 2px;
     text-align: center;
 }
 

@@ -1,12 +1,14 @@
 var Matrix = function () {
 
-    this.matrix = new Array(9);
-
-    for (row = 0; row < 9; row++) {
-        this.matrix[row] = new Array(9);
-        for (col = 0; col < 9; col++) {
-            this.matrix[row][col] = new Cell(row, col, getGroupIndex(row, col));
+    function init() {
+        var matrix = new Array(9);
+        for (row = 0; row < 9; row++) {
+            matrix[row] = new Array(9);
+            for (col = 0; col < 9; col++) {
+                matrix[row][col] = new Cell(row, col, getGroupIndex(row, col));
+            }
         }
+        return matrix;
     }
 
     function getGroup(matrix, row, col) {
@@ -120,6 +122,23 @@ var Matrix = function () {
         return isCrazy;
     }
 
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+    function removeNumberFromCell(cell, number) {
+        cell.numbers = cell.numbers.replace(new RegExp(number), '');
+    }
+
+    function addNumberToCell(cell, number) {
+        cell.numbers += number;
+        var numberArray = [];
+        for (var i = 0; i < cell.numbers.length; i++) {
+            numberArray.push(cell.numbers[i]);
+        }
+        cell.numbers = numberArray.sort().filter(onlyUnique).join('');
+    }
+
     this.setValue = function (row, col, value, oldValue) {
 
         var todo = 'remove';
@@ -143,22 +162,6 @@ var Matrix = function () {
         }
     };
 
-    var removeNumberFromCell = function (cell, number) {
-        cell.numbers = cell.numbers.replace(new RegExp(number), '');
-    };
-
-    var addNumberToCell = function (cell, number) {
-        cell.numbers += number;
-        var numberArray = [];
-        for (var i = 0; i < cell.numbers.length; i++) {
-            numberArray.push(cell.numbers[i]);
-        }
-        cell.numbers = numberArray.sort().filter(onlyUnique).join('');
-    };
-
-    function onlyUnique(value, index, self) {
-        return self.indexOf(value) === index;
-    }
 
     this.checkMatrixForCraziness = function () {
         for (var row = 0; row < 9; row++) {
@@ -170,5 +173,11 @@ var Matrix = function () {
 
     this.clone = function () {
         return _.cloneDeep(this.matrix);
-    }
+    };
+
+    this.reset = function () {
+        this.matrix = init();
+    };
+
+    this.reset();
 };
