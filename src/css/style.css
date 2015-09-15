@@ -3,13 +3,13 @@ body {
 }
 
 h1 {
-    margin-bottom: 0px;
+    margin: 0px;
     color: #000066;
+    font-size: 5rem;
 }
 
-h4 {
-    margin-top: 0px;
-    color: #000088;
+h5 {
+    margin-bottom: 10px;
 }
 
 table thead th {

@@ -13,6 +13,12 @@ module.exports = {
                 src: ['bootstrap.min.css'],
                 dest: '<%= diststyles %>',
                 ext: '.min.css'
+            }, {
+                expand: true,
+                cwd: 'bower_components/angular-ui/build/',
+                src: ['angular-ui.min.css'],
+                dest: '<%= diststyles %>',
+                ext: '.min.css'
             }
 
 

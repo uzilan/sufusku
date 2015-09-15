@@ -4,7 +4,7 @@ sufusku.controller('LogController', ['$scope', 'Log', 'Matrix', 'LogService',
         $scope.matrix = Matrix;
 
         $scope.getCellText = function (item) {
-            return item.row + ',' + getLetter(item.col) + ': ' + item.value;
+            return (item.row + 1) + ',' + getLetter(item.col) + ': ' + item.value;
         };
 
         function getLetter(i) {
