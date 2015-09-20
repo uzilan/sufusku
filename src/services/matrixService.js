@@ -3,6 +3,11 @@ sufusku.factory('MatrixService', function () {
     var vm = this;
 
     vm.getColor = function (cell) {
+
+        if (cell.baseline) {
+            return 'white';
+        }
+
         var numbersLength = cell.numbers.length;
 
         var rbColor;

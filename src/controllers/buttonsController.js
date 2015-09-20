@@ -7,6 +7,16 @@ sufusku.controller('ButtonsController', ['$scope', 'Log', 'Matrix',
 
             $scope.matrix.reset.call($scope.matrix);
             $scope.log.reset.call($scope.log);
+        };
+
+        $scope.baseline = function() {
+            $scope.matrix.setBaseline.call($scope.matrix);
+        };
+
+        $scope.resetToBaseline = function() {
+            $scope.matrix.resetToBaseline.call($scope.matrix);
+            $scope.log.reset.call($scope.log);
         }
 
     }]);
+

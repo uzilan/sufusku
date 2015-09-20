@@ -10,7 +10,7 @@
 
             <input type="number" min="1" max="9" class="input" value="{{cell.value}}"
                    ng-model="cell.value" ng-change="cellChanged(cell, '{{cell.value}}')"
-                   style="background-color: {{getColor(cell)}}">
+                   style="background-color: {{getColor(cell)}}; font-weight: {{getFontWeight(cell)}}">
 
             <div class="numbers" style="background-color: {{getColor(cell)}}">
                 {{cell.value === '' || cell.value === null ? cell.numbers : ''}}

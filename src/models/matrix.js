@@ -177,6 +177,30 @@ var Matrix = function () {
 
     this.reset = function () {
         this.matrix = init();
+        this.baseline = false;
+    };
+
+    this.setBaseline = function () {
+        this.baseline = true;
+        for (var row = 0; row < 9; row++) {
+            for (var col = 0; col < 9; col++) {
+                var cell = this.matrix[row][col];
+                if (cell.value !== '') {
+                    cell.baseline = true;
+                }
+            }
+        }
+    };
+
+    this.resetToBaseline = function() {
+        for (var row = 0; row < 9; row++) {
+            for (var col = 0; col < 9; col++) {
+                var cell = this.matrix[row][col];
+                if (!cell.baseline) {
+                    cell.reset();
+                }
+            }
+        }
     };
 
     this.reset();
