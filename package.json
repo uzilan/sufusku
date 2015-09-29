@@ -1,7 +1,7 @@
 {
   "name": "sufusku",
   "version": "0.0.1",
-  "description": "Sufusku - makes your annoying sudoku easier",
+  "description": "Sufusku - makes sudoku easier",
   "repository": {
     "type": "git",
     "url": "git://github.com/uzilan/sufusku.git"
@@ -19,6 +19,7 @@
     "grunt-contrib-copy": "^0.8.1",
     "grunt-contrib-cssmin": "^0.13.0",
     "grunt-contrib-htmlmin": "^0.4.0",
+    "grunt-contrib-imagemin": "^0.9.4",
     "grunt-contrib-uglify": "^0.9.2",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-ng-annotate": "^1.0.1",

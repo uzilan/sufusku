@@ -23,6 +23,14 @@ module.exports = {
             livereloadOnError: false
         }
     },
+    images: {
+        files: ['<%= app %>/**/*.png'],
+        tasks: ['imagemin'],
+        options: {
+            livereload: true,
+            livereloadOnError: false
+        }
+    },
     serve: {
         files: ['<%= app %>/index.html'],
         tasks: ['copy'],
