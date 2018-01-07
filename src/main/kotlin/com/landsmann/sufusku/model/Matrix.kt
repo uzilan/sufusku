@@ -19,8 +19,8 @@ data class Matrix(val data: MutableList<Int> = createEmptyMatrix()) {
     override fun toString(): String {
         var s = ""
         data.forEachIndexed { index, cell ->
-            if (index % 9 == 0) s += "\n"
-            s += "$cell "
+            if (index != 0 && index % 9 == 0) s += "\n"
+            s += "\t$cell"
         }
         return s
     }
@@ -29,9 +29,9 @@ data class Matrix(val data: MutableList<Int> = createEmptyMatrix()) {
 private fun createEmptyMatrix() = (0 until 81).map { 0 }.toMutableList()
 
 private fun getLowest(index: Int): Int {
-    return when {
-        index in 0 until 3 -> 0
-        index in 3 until 6 -> 3
+    return when (index) {
+        in 0 until 3 -> 0
+        in 3 until 6 -> 3
         else -> 6
     }
 }
