@@ -111,6 +111,7 @@ export const useSudokuBoard = () => {
     selectedCell,
     setSelectedCell,
     setCellValue,
+    setBoard: applyBoard,
     clearBoard,
     undo,
     redo,
