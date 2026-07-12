@@ -5,7 +5,8 @@ import NumberPad from './components/NumberPad';
 import { useSudokuBoard } from './hooks/useSudokuBoard';
 
 function App() {
-  const { board, selectedCell, setSelectedCell, setCellValue, clearBoard } = useSudokuBoard();
+  const { board, selectedCell, setSelectedCell, setCellValue, clearBoard, undo, redo, canUndo, canRedo } =
+    useSudokuBoard();
 
   return (
     <Box
@@ -20,7 +21,16 @@ function App() {
         },
       }}
     >
-      <Header onClearAll={clearBoard} />
+      <Header
+        board={board}
+        selectedCell={selectedCell}
+        onClearAll={clearBoard}
+        onSolveCell={setCellValue}
+        onUndo={undo}
+        onRedo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
+      />
       <Box
         sx={{
           flex: 1,

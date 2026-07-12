@@ -1,13 +1,32 @@
-import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
 import HeaderMenu from './HeaderMenu';
+import type { Board as BoardState } from '../sudoku/logic';
 
 const landscapeQuery = '@media (max-height: 599.95px) and (orientation: landscape)';
 
 interface HeaderProps {
+  board: BoardState;
+  selectedCell: number | null;
   onClearAll: () => void;
+  onSolveCell: (value: number) => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
-const Header = ({ onClearAll }: HeaderProps) => (
+const Header = ({
+  board,
+  selectedCell,
+  onClearAll,
+  onSolveCell,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+}: HeaderProps) => (
   <AppBar
     position="static"
     elevation={0}
@@ -63,13 +82,32 @@ const Header = ({ onClearAll }: HeaderProps) => (
       </Typography>
       <Box
         sx={{
+          display: 'flex',
+          alignItems: 'center',
           [landscapeQuery]: {
             order: 1,
             flexShrink: 0,
+            flexDirection: 'column',
           },
         }}
       >
-        <HeaderMenu onClearAll={onClearAll} />
+        <IconButton
+          onClick={onUndo}
+          disabled={!canUndo}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
+        >
+          <UndoIcon />
+        </IconButton>
+        <IconButton
+          onClick={onRedo}
+          disabled={!canRedo}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
+        >
+          <RedoIcon />
+        </IconButton>
+        <Box sx={{ [landscapeQuery]: { order: 1 } }}>
+          <HeaderMenu board={board} selectedCell={selectedCell} onClearAll={onClearAll} onSolveCell={onSolveCell} />
+        </Box>
       </Box>
     </Toolbar>
   </AppBar>

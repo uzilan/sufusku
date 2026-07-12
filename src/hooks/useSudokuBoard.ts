@@ -22,29 +22,71 @@ const loadBoard = (): Board => {
 export const useSudokuBoard = () => {
   const [board, setBoard] = useState<Board>(loadBoard);
   const [selectedCell, setSelectedCell] = useState<number | null>(0);
+  const [history, setHistory] = useState<Board[]>([]);
+  const [future, setFuture] = useState<Board[]>([]);
 
   // Persist board to localStorage on every change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
   }, [board]);
 
+  // Apply a new board, recording the previous one for undo and clearing redo history
+  const applyBoard = (newBoard: Board) => {
+    setHistory([...history, board]);
+    setFuture([]);
+    setBoard(newBoard);
+  };
+
   // Set number in the selected cell
   const setCellValue = (value: number | null) => {
     if (selectedCell === null) return;
     const newBoard = [...board];
     newBoard[selectedCell] = value;
-    setBoard(newBoard);
+    applyBoard(newBoard);
   };
 
   // Reset the board to its initial blank state
   const clearBoard = () => {
-    setBoard(Array(81).fill(null));
+    applyBoard(Array(81).fill(null));
     setSelectedCell(0);
+  };
+
+  const undo = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    setHistory(history.slice(0, -1));
+    setFuture([...future, board]);
+    setBoard(prev);
+  };
+
+  const redo = () => {
+    if (future.length === 0) return;
+    const next = future[future.length - 1];
+    setFuture(future.slice(0, -1));
+    setHistory([...history, board]);
+    setBoard(next);
   };
 
   // Keyboard input
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+      if (isCtrlOrCmd && e.key.toLowerCase() === 'z' && e.shiftKey) {
+        e.preventDefault();
+        redo();
+        return;
+      }
+      if (isCtrlOrCmd && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        redo();
+        return;
+      }
+      if (isCtrlOrCmd && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        undo();
+        return;
+      }
+
       if (selectedCell === null) return;
       if (e.key >= '1' && e.key <= '9') setCellValue(parseInt(e.key));
       else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') setCellValue(null);
@@ -62,7 +104,17 @@ export const useSudokuBoard = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedCell, board]);
+  }, [selectedCell, board, history, future]);
 
-  return { board, selectedCell, setSelectedCell, setCellValue, clearBoard };
+  return {
+    board,
+    selectedCell,
+    setSelectedCell,
+    setCellValue,
+    clearBoard,
+    undo,
+    redo,
+    canUndo: history.length > 0,
+    canRedo: future.length > 0,
+  };
 };

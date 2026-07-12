@@ -1,32 +1,39 @@
-# React + TypeScript + Vite
+# Sufusku
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A mobile-first Sudoku helper. Enter your own puzzle into a blank 9x9 grid — Sufusku tracks candidates (pencil marks), highlights conflicts in real time, and flags cells with only one possible value.
 
-Currently, two official plugins are available:
+**Live:** [sufusku.se](https://sufusku.se/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Sufusku screenshot](public/screenshot.png)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Real-time candidate (pencil-mark) tracking for every empty cell
+- Conflict highlighting across rows, columns, and 3x3 boxes
+- Green highlight for cells with exactly one valid remaining value
+- **Solve cell** — runs a backtracking solver to tell you the valid value(s) for the selected cell, or fills it in automatically when there's only one
+- Undo / redo, with keyboard shortcuts (`Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z`)
+- Board persists across page reloads
+- Responsive layout for portrait, landscape, and desktop
 
-## Expanding the Oxlint configuration
+## Getting started
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Commands
+
+- `npm run dev` — start the Vite dev server (HMR)
+- `npm run build` — type-check then build for production
+- `npm run lint` — run Oxlint
+- `npm run preview` — preview the production build
+
+## Stack
+
+React 19, TypeScript, Vite, MUI (Emotion), Oxlint.
+
+## License
+
+[MIT](LICENSE)

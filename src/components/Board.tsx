@@ -75,6 +75,11 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
         '@media (min-width: 600px)': {
           maxWidth: '460px',
         },
+        '@media (min-width: 600px) and (min-height: 600px)': {
+          width: 'min(calc(100vh - 81px), calc(100vw - 32px))',
+          height: 'min(calc(100vh - 81px), calc(100vw - 32px))',
+          maxWidth: 'none',
+        },
         '@media (max-height: 599.95px) and (orientation: landscape)': {
           width: 'min(calc(100vh - 16px), calc(100vw - 280px))',
           height: 'min(calc(100vh - 16px), calc(100vw - 280px))',
