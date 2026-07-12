@@ -8,12 +8,16 @@ describe('trimmed opencv.js', () => {
       'adaptiveThreshold',
       'approxPolyDP',
       'arcLength',
+      'boundingRect',
       'contourArea',
       'cvtColor',
       'findContours',
       'GaussianBlur',
       'getPerspectiveTransform',
       'isContourConvex',
+      'minMaxLoc',
+      'resize',
+      'threshold',
       'warpPerspective',
     ]) {
       expect(typeof cv[fn], fn).toBe('function');

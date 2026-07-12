@@ -11,8 +11,12 @@ export const loadOpenCV = (): Promise<CV> => {
     script.async = true;
     script.onload = () => {
       const cv = (window as unknown as { cv: CV }).cv;
-      if (cv && typeof cv.then === 'function') cv.then(resolve, reject);
-      else if (cv && cv.Mat) resolve(cv);
+      if (!cv) {
+        reject(new Error('OpenCV script loaded but window.cv is missing'));
+        return;
+      }
+      if (typeof cv.then === 'function') cv.then(resolve, reject);
+      else if (cv.Mat) resolve(cv);
       else cv.onRuntimeInitialized = () => resolve(cv);
     };
     script.onerror = () => reject(new Error('Failed to load OpenCV'));
