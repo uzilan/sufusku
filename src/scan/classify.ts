@@ -1,3 +1,6 @@
+import type { Board } from '../sudoku/logic';
+import type { DigitModel } from './model';
+
 // Pure pixel pipeline over RawImage — no DOM, no OpenCV, testable in Node.
 // RawImage is a structural subset of ImageData so canvas results pass directly.
 export interface RawImage {
@@ -78,4 +81,30 @@ export const prepareDigit = (cell: RawImage): Float32Array => {
     }
   }
   return out;
+};
+
+export interface ScanResult {
+  board: Board;
+  confidence: number[]; // per cell; 1 for empty cells
+}
+
+// Slice the warped grid, gate empties, batch-classify the rest
+export const classifyGrid = async (model: DigitModel, grid: RawImage): Promise<ScanResult> => {
+  const cells = sliceCells(grid);
+  const board: Board = Array(81).fill(null);
+  const confidence: number[] = Array(81).fill(1);
+  const digitIndices: number[] = [];
+  for (let i = 0; i < 81; i++) {
+    if (!isEmptyCell(cells[i])) digitIndices.push(i);
+  }
+  const batch = new Float32Array(digitIndices.length * DIGIT_SIZE * DIGIT_SIZE);
+  digitIndices.forEach((cellIndex, n) => {
+    batch.set(prepareDigit(cells[cellIndex]), n * DIGIT_SIZE * DIGIT_SIZE);
+  });
+  const predictions = await model.predict(batch, digitIndices.length);
+  digitIndices.forEach((cellIndex, n) => {
+    board[cellIndex] = predictions[n].digit;
+    confidence[cellIndex] = predictions[n].confidence;
+  });
+  return { board, confidence };
 };
