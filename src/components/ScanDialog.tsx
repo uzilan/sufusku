@@ -6,6 +6,7 @@ import { classifyGrid, GRID_SIZE, type RawImage, type ScanResult } from '../scan
 import { findGridQuad, warpGrid, type Quad } from '../scan/detect';
 import { loadDigitModel } from '../scan/model';
 import { loadOpenCV, type CV } from '../scan/opencv';
+import ScanReview from './ScanReview';
 
 interface ScanDialogProps {
   open: boolean;
@@ -33,19 +34,6 @@ const imageDataFrom = (source: CanvasImageSource, width: number, height: number)
   ctx.drawImage(source, 0, 0, width, height);
   return ctx.getImageData(0, 0, width, height);
 };
-
-// TEMPORARY until Task 8: minimal review placeholder
-const ScanReview = ({ result, onRetake, onAccept }: {
-  result: ScanResult;
-  onRetake: () => void;
-  onAccept: (board: Board) => void;
-}) => (
-  <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-    <Typography>Scanned {result.board.filter((v) => v !== null).length} digits</Typography>
-    <Button onClick={() => onAccept(result.board)}>Accept</Button>
-    <Button onClick={onRetake}>Retake</Button>
-  </Box>
-);
 
 const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
   const [phase, setPhase] = useState<Phase>('viewfinder');
