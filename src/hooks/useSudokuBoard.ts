@@ -2,9 +2,31 @@ import { useEffect, useState } from 'react';
 import { getCellCoords } from '../sudoku/coords';
 import type { Board } from '../sudoku/logic';
 
+const STORAGE_KEY = 'sufusku-board';
+
+const isValidBoard = (value: unknown): value is Board =>
+  Array.isArray(value) &&
+  value.length === 81 &&
+  value.every((cell) => cell === null || (typeof cell === 'number' && cell >= 1 && cell <= 9));
+
+const loadBoard = (): Board => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null');
+    if (isValidBoard(parsed)) return parsed;
+  } catch {
+    // ignore malformed storage, fall through to blank board
+  }
+  return Array(81).fill(null);
+};
+
 export const useSudokuBoard = () => {
-  const [board, setBoard] = useState<Board>(() => Array(81).fill(null));
+  const [board, setBoard] = useState<Board>(loadBoard);
   const [selectedCell, setSelectedCell] = useState<number | null>(0);
+
+  // Persist board to localStorage on every change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
+  }, [board]);
 
   // Set number in the selected cell
   const setCellValue = (value: number | null) => {
