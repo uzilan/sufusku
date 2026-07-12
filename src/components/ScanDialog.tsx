@@ -104,7 +104,13 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
       }
       const video = videoRef.current!;
       video.srcObject = stream;
-      await video.play();
+      try {
+        await video.play();
+      } catch {
+        stream.getTracks().forEach((t) => t.stop());
+        if (!cancelled) setCameraFailed(true);
+        return;
+      }
 
       const tick = (now: number) => {
         if (cancelled) return;
@@ -151,6 +157,7 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
             cancelled = true;
             const fullFrame = imageDataFrom(video, video.videoWidth, video.videoHeight);
             const fullQuad = quad.map((p) => ({ x: p.x / scale, y: p.y / scale })) as Quad;
+            stream?.getTracks().forEach((t) => t.stop());
             void runPipeline(cv, fullFrame, fullQuad);
           }
         } else {
