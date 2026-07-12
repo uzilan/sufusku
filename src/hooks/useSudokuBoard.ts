@@ -14,6 +14,12 @@ export const useSudokuBoard = () => {
     setBoard(newBoard);
   };
 
+  // Reset the board to its initial blank state
+  const clearBoard = () => {
+    setBoard(Array(81).fill(null));
+    setSelectedCell(0);
+  };
+
   // Keyboard input
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -36,5 +42,5 @@ export const useSudokuBoard = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedCell, board]);
 
-  return { board, selectedCell, setSelectedCell, setCellValue };
+  return { board, selectedCell, setSelectedCell, setCellValue, clearBoard };
 };

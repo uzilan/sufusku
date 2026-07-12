@@ -10,9 +10,16 @@ interface BoardProps {
 }
 
 // Determine cell styling
-const getCellStyling = (board: BoardState, selectedCell: number | null, conflictingCells: Set<number>, index: number) => {
+const getCellStyling = (
+  board: BoardState,
+  selectedCell: number | null,
+  conflictingCells: Set<number>,
+  index: number,
+  candidates: Set<number>,
+) => {
   const isSelected = selectedCell === index;
   const isConflicting = conflictingCells.has(index);
+  const isSingleCandidate = board[index] === null && candidates.size === 1;
 
   let bgcolor = 'background.paper';
   let borderColor = 'rgba(255, 255, 255, 0.08)';
@@ -20,6 +27,8 @@ const getCellStyling = (board: BoardState, selectedCell: number | null, conflict
   if (isConflicting) {
     bgcolor = 'rgba(239, 68, 68, 0.2)';
     borderColor = 'rgba(239, 68, 68, 0.4)';
+  } else if (isSingleCandidate) {
+    bgcolor = 'rgba(34, 197, 94, 0.2)';
   }
 
   if (selectedCell !== null) {
@@ -34,10 +43,10 @@ const getCellStyling = (board: BoardState, selectedCell: number | null, conflict
         bgcolor = 'rgba(239, 68, 68, 0.25)';
         borderColor = '#ef4444';
       } else {
-        bgcolor = 'rgba(99, 102, 241, 0.15)';
         borderColor = '#06b6d4';
+        if (!isSingleCandidate) bgcolor = 'rgba(99, 102, 241, 0.15)';
       }
-    } else if (!isConflicting) {
+    } else if (!isConflicting && !isSingleCandidate) {
       if (sharesValue) bgcolor = 'rgba(6, 182, 212, 0.2)';
       else if (isRelated) bgcolor = 'rgba(99, 102, 241, 0.05)';
     }
@@ -75,8 +84,8 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
     >
       {board.map((val, idx) => {
         const { row, col } = getCellCoords(idx);
-        const { bgcolor, borderColor, isConflicting } = getCellStyling(board, selectedCell, conflictingCells, idx);
         const candidates = getCandidates(board, idx);
+        const { bgcolor, borderColor, isConflicting } = getCellStyling(board, selectedCell, conflictingCells, idx, candidates);
 
         return (
           <Cell

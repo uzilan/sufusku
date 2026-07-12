@@ -24,6 +24,7 @@ const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
         flexShrink: 0,
         '@media (max-width: 599.95px) and (orientation: portrait)': {
           display: 'grid',
+          maxWidth: '200px',
         },
         '@media (max-height: 599.95px) and (orientation: landscape)': {
           display: 'grid',
