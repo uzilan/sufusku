@@ -13,9 +13,6 @@ export const GRID_SIZE = 450;
 export const CELL_SIZE = 50; // GRID_SIZE / 9
 export const DIGIT_SIZE = 28; // CNN input size
 
-const EMPTY_CELL_MARGIN = 10; // px skipped on each side — grid lines live here
-const EMPTY_INK_THRESHOLD_OFFSET = 60; // ink = darker than cell mean by this much
-const EMPTY_MAX_INK_FRACTION = 0.02;
 const DIGIT_CROP_MARGIN = 6; // px trimmed in the no-ink fallback crop
 const CELL_SEARCH_SLACK = 8; // px searched past the cell on each side for shifted digits
 const DIGIT_WINDOW_PADDING = 1.6; // window side vs blob size — digit fills ~1/1.6 of frame like training
@@ -23,46 +20,18 @@ const MIN_DIGIT_WINDOW = 24; // px, don't zoom tiny noise blobs to full frame
 const MIN_DIGIT_INK = 12; // px, components smaller than this are speckle noise
 const MAX_DIGIT_ASPECT = 4; // components longer/thinner than this are line fragments
 const MERGE_GAP = 3; // px, digit parts split by thresholding get re-merged within this gap
+const MIN_CELL_CONTRAST = 50; // gray levels; below this the cell is uniform paper — empty
+const MIN_DIGIT_HEIGHT = 12; // px; shorter blobs are smudges/bleed-through, not digits
 
 export const grayAt = (img: RawImage, x: number, y: number): number => {
   const i = (y * img.width + x) * 4;
   return 0.299 * img.data[i] + 0.587 * img.data[i + 1] + 0.114 * img.data[i + 2];
 };
 
-// Split the warped 450x450 grid into 81 row-major 50x50 cells
-export const sliceCells = (grid: RawImage): RawImage[] => {
-  const cells: RawImage[] = [];
-  for (let r = 0; r < 9; r++) {
-    for (let c = 0; c < 9; c++) {
-      const data = new Uint8ClampedArray(CELL_SIZE * CELL_SIZE * 4);
-      for (let y = 0; y < CELL_SIZE; y++) {
-        const srcStart = ((r * CELL_SIZE + y) * grid.width + c * CELL_SIZE) * 4;
-        data.set(grid.data.subarray(srcStart, srcStart + CELL_SIZE * 4), y * CELL_SIZE * 4);
-      }
-      cells.push({ data, width: CELL_SIZE, height: CELL_SIZE });
-    }
-  }
-  return cells;
-};
-
-// A cell is empty when its central region has almost no pixels darker than the cell mean
-export const isEmptyCell = (cell: RawImage): boolean => {
-  let sum = 0;
-  for (let y = 0; y < cell.height; y++) {
-    for (let x = 0; x < cell.width; x++) sum += grayAt(cell, x, y);
-  }
-  const mean = sum / (cell.width * cell.height);
-  const threshold = mean - EMPTY_INK_THRESHOLD_OFFSET;
-
-  let dark = 0;
-  const side = CELL_SIZE - 2 * EMPTY_CELL_MARGIN;
-  for (let y = EMPTY_CELL_MARGIN; y < cell.height - EMPTY_CELL_MARGIN; y++) {
-    for (let x = EMPTY_CELL_MARGIN; x < cell.width - EMPTY_CELL_MARGIN; x++) {
-      if (grayAt(cell, x, y) < threshold) dark++;
-    }
-  }
-  return dark / (side * side) < EMPTY_MAX_INK_FRACTION;
-};
+// A cell is empty when no digit-shaped ink blob is found near it — the same
+// blob search prepareDigit uses, so gate and classifier can never disagree
+// about where the digit is
+export const isEmptyCell = (grid: RawImage, index: number): boolean => findDigitBlob(grid, index) === null;
 
 // Box-downsample an arbitrary window of the grid to 28x28, normalized
 // (255 - gray) / 255. MUST match the normalization in tools/train-digits/train.py.
@@ -88,13 +57,14 @@ const downsampleWindow = (grid: RawImage, wx0: number, wy0: number, side: number
   return out;
 };
 
-// Extract the digit of cell `index` from the whole warped grid: locate the ink
-// blob around the cell (with slack past the 50px slice, since imperfect warps
-// shift digits off-center and even across cell boundaries), ignore grid-line
-// rows/columns, and center the sampling window on the blob. The CNN was
-// trained on centered digits, so centering here is what makes real photos
-// (where the warp is never pixel-perfect) classify like synthetic input.
-export const prepareDigit = (grid: RawImage, index: number): Float32Array => {
+// Locate the digit ink blob of cell `index` in the whole warped grid,
+// searching with slack past the 50px slice since imperfect warps shift digits
+// off-center and even across cell boundaries. Returns the blob bounding box
+// in absolute grid coordinates, or null when the cell holds no digit.
+const findDigitBlob = (
+  grid: RawImage,
+  index: number,
+): { x0: number; x1: number; y0: number; y1: number } | null => {
   const row = Math.floor(index / 9);
   const col = index % 9;
   const rx0 = Math.max(0, col * CELL_SIZE - CELL_SEARCH_SLACK);
@@ -112,6 +82,9 @@ export const prepareDigit = (grid: RawImage, index: number): Float32Array => {
   grays.sort((a, b) => a - b);
   const lo = grays[Math.floor(grays.length * 0.05)];
   const hi = grays[Math.floor(grays.length * 0.95)];
+  // Empty cells are near-uniform paper — noise and page bleed-through don't
+  // produce the contrast a printed digit does
+  if (hi - lo < MIN_CELL_CONTRAST) return null;
   const threshold = lo + 0.5 * (hi - lo);
 
   // Connected components over the dark mask. Grid lines survive naive
@@ -174,37 +147,49 @@ export const prepareDigit = (grid: RawImage, index: number): Float32Array => {
     }
   }
 
-  let bx0 = -1;
-  let bx1 = -1;
-  let by0 = -1;
-  let by1 = -1;
-  if (best) {
-    // Merge other digit parts that sit within a few px of the chosen blob
-    // (thresholding can split a digit into pieces)
-    bx0 = best.x0;
-    bx1 = best.x1;
-    by0 = best.y0;
-    by1 = best.y1;
-    for (const c of components) {
-      if (c === best || c.count < MIN_DIGIT_INK) continue;
-      const w = c.x1 - c.x0 + 1;
-      const h = c.y1 - c.y0 + 1;
-      if (w > CELL_SIZE || h > CELL_SIZE || Math.max(w, h) / Math.min(w, h) > MAX_DIGIT_ASPECT) continue;
-      if (
-        c.x0 <= bx1 + MERGE_GAP && c.x1 >= bx0 - MERGE_GAP &&
-        c.y0 <= by1 + MERGE_GAP && c.y1 >= by0 - MERGE_GAP
-      ) {
-        bx0 = Math.min(bx0, c.x0);
-        bx1 = Math.max(bx1, c.x1);
-        by0 = Math.min(by0, c.y0);
-        by1 = Math.max(by1, c.y1);
-      }
+  if (!best) return null;
+
+  // Merge other digit parts that sit within a few px of the chosen blob
+  // (thresholding can split a digit into pieces)
+  let bx0 = best.x0;
+  let bx1 = best.x1;
+  let by0 = best.y0;
+  let by1 = best.y1;
+  for (const c of components) {
+    if (c === best || c.count < MIN_DIGIT_INK) continue;
+    const w = c.x1 - c.x0 + 1;
+    const h = c.y1 - c.y0 + 1;
+    if (w > CELL_SIZE || h > CELL_SIZE || Math.max(w, h) / Math.min(w, h) > MAX_DIGIT_ASPECT) continue;
+    if (
+      c.x0 <= bx1 + MERGE_GAP && c.x1 >= bx0 - MERGE_GAP &&
+      c.y0 <= by1 + MERGE_GAP && c.y1 >= by0 - MERGE_GAP
+    ) {
+      bx0 = Math.min(bx0, c.x0);
+      bx1 = Math.max(bx1, c.x1);
+      by0 = Math.min(by0, c.y0);
+      by1 = Math.max(by1, c.y1);
     }
   }
 
-  // No ink found (shouldn't happen — isEmptyCell gates first): fall back to
-  // the plain center crop of the cell
-  if (bx1 < 0) {
+  // Digits are taller than speckle or bleed-through smudges
+  if (by1 - by0 + 1 < MIN_DIGIT_HEIGHT) return null;
+
+  return { x0: rx0 + bx0, x1: rx0 + bx1, y0: ry0 + by0, y1: ry0 + by1 };
+};
+
+// Downsample the digit of cell `index` for the CNN: a square window centered
+// on the located blob, padded like the training renders (digit fills ~60-80%
+// of the frame). The CNN was trained on centered digits, so centering here is
+// what makes real photos (where the warp is never pixel-perfect) classify
+// like synthetic input.
+export const prepareDigit = (grid: RawImage, index: number): Float32Array => {
+  const blob = findDigitBlob(grid, index);
+
+  // No blob (shouldn't happen — isEmptyCell gates on the same search): fall
+  // back to the plain center crop of the cell
+  if (!blob) {
+    const row = Math.floor(index / 9);
+    const col = index % 9;
     return downsampleWindow(
       grid,
       col * CELL_SIZE + DIGIT_CROP_MARGIN,
@@ -213,18 +198,16 @@ export const prepareDigit = (grid: RawImage, index: number): Float32Array => {
     );
   }
 
-  // Square window centered on the blob, padded like the training renders
-  // (digit fills ~60-80% of the frame), clamped to the grid
-  const bw = bx1 - bx0 + 1;
-  const bh = by1 - by0 + 1;
+  const bw = blob.x1 - blob.x0 + 1;
+  const bh = blob.y1 - blob.y0 + 1;
   const side = Math.min(
     Math.max(Math.round(Math.max(bw, bh) * DIGIT_WINDOW_PADDING), MIN_DIGIT_WINDOW),
     Math.min(grid.width, grid.height),
   );
-  const cxAbs = rx0 + (bx0 + bx1 + 1) / 2;
-  const cyAbs = ry0 + (by0 + by1 + 1) / 2;
-  const wx0 = Math.round(Math.min(Math.max(cxAbs - side / 2, 0), grid.width - side));
-  const wy0 = Math.round(Math.min(Math.max(cyAbs - side / 2, 0), grid.height - side));
+  const cx = (blob.x0 + blob.x1 + 1) / 2;
+  const cy = (blob.y0 + blob.y1 + 1) / 2;
+  const wx0 = Math.round(Math.min(Math.max(cx - side / 2, 0), grid.width - side));
+  const wy0 = Math.round(Math.min(Math.max(cy - side / 2, 0), grid.height - side));
   return downsampleWindow(grid, wx0, wy0, side);
 };
 
@@ -233,14 +216,13 @@ export interface ScanResult {
   confidence: number[]; // per cell; 1 for empty cells
 }
 
-// Slice the warped grid, gate empties, batch-classify the rest
+// Gate empties, batch-classify the rest
 export const classifyGrid = async (model: DigitModel, grid: RawImage): Promise<ScanResult> => {
-  const cells = sliceCells(grid);
   const board: Board = Array(81).fill(null);
   const confidence: number[] = Array(81).fill(1);
   const digitIndices: number[] = [];
   for (let i = 0; i < 81; i++) {
-    if (!isEmptyCell(cells[i])) digitIndices.push(i);
+    if (!isEmptyCell(grid, i)) digitIndices.push(i);
   }
   const batch = new Float32Array(digitIndices.length * DIGIT_SIZE * DIGIT_SIZE);
   digitIndices.forEach((cellIndex, n) => {

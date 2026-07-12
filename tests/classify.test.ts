@@ -1,44 +1,35 @@
 import { describe, expect, it } from 'vitest';
-import {
-  CELL_SIZE,
-  DIGIT_SIZE,
-  GRID_SIZE,
-  isEmptyCell,
-  prepareDigit,
-  sliceCells,
-} from '../src/scan/classify';
+import { DIGIT_SIZE, GRID_SIZE, isEmptyCell, prepareDigit } from '../src/scan/classify';
 import { fillRect, makeImage } from './helpers/image';
-
-describe('sliceCells', () => {
-  it('returns 81 cells of CELL_SIZE, row-major', () => {
-    const grid = makeImage(GRID_SIZE, GRID_SIZE);
-    // Mark top-left pixel of cell (row 2, col 5) — flat index 23
-    fillRect(grid, 5 * CELL_SIZE, 2 * CELL_SIZE, 1, 1, 0);
-    const cells = sliceCells(grid);
-    expect(cells).toHaveLength(81);
-    expect(cells[0].width).toBe(CELL_SIZE);
-    expect(cells[0].height).toBe(CELL_SIZE);
-    expect(cells[23].data[0]).toBe(0); // marked pixel landed in cell 23
-    expect(cells[22].data[0]).toBe(255);
-  });
-});
 
 describe('isEmptyCell', () => {
   it('treats a blank cell as empty', () => {
-    expect(isEmptyCell(makeImage(CELL_SIZE, CELL_SIZE))).toBe(true);
+    expect(isEmptyCell(makeImage(GRID_SIZE, GRID_SIZE), 40)).toBe(true);
   });
 
-  it('treats a cell with a central ink blob as non-empty', () => {
-    const cell = makeImage(CELL_SIZE, CELL_SIZE);
-    fillRect(cell, 18, 14, 14, 22, 20); // digit-sized dark blob
-    expect(isEmptyCell(cell)).toBe(false);
+  it('treats a cell with a digit-sized ink blob as non-empty', () => {
+    const grid = makeImage(GRID_SIZE, GRID_SIZE);
+    fillRect(grid, 218, 214, 14, 22, 20); // digit-sized dark blob in cell 40
+    expect(isEmptyCell(grid, 40)).toBe(false);
   });
 
-  it('ignores grid lines at the cell borders', () => {
-    const cell = makeImage(CELL_SIZE, CELL_SIZE);
-    fillRect(cell, 0, 0, CELL_SIZE, 3, 20); // top grid line
-    fillRect(cell, 0, 0, 3, CELL_SIZE, 20); // left grid line
-    expect(isEmptyCell(cell)).toBe(true);
+  it('detects a digit shifted to the cell edge (imperfect warp)', () => {
+    const grid = makeImage(GRID_SIZE, GRID_SIZE);
+    fillRect(grid, 201, 230, 14, 20, 20); // blob hugging cell 40's left edge
+    expect(isEmptyCell(grid, 40)).toBe(false);
+  });
+
+  it('ignores grid lines around the cell', () => {
+    const grid = makeImage(GRID_SIZE, GRID_SIZE);
+    fillRect(grid, 200, 150, 3, 150, 20); // vertical line through cell 40's left edge
+    fillRect(grid, 150, 200, 150, 3, 20); // horizontal line through its top edge
+    expect(isEmptyCell(grid, 40)).toBe(true);
+  });
+
+  it('ignores faint low-contrast smudges (page bleed-through)', () => {
+    const grid = makeImage(GRID_SIZE, GRID_SIZE, 230);
+    fillRect(grid, 218, 214, 14, 22, 195); // smudge only 35 gray levels darker
+    expect(isEmptyCell(grid, 40)).toBe(true);
   });
 });
 

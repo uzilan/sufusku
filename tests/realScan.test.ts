@@ -8,11 +8,11 @@ import { loadModelFromDisk } from './helpers/modelNode';
 import { loadOpenCVNode } from './helpers/opencvNode';
 
 describe('real photo scan', () => {
-  it('reads a photographed newspaper puzzle end to end', async () => {
+  it.each(['real-1', 'real-2'])('reads photographed puzzle %s end to end', async (name) => {
     const cv = await loadOpenCVNode();
     const model = wrapModel(await loadModelFromDisk('public/models/digits'));
-    const image = loadPng('tests/fixtures/real-1.png');
-    const expected = fs.readFileSync('tests/fixtures/real-1.txt', 'utf8').trim();
+    const image = loadPng(`tests/fixtures/${name}.png`);
+    const expected = fs.readFileSync(`tests/fixtures/${name}.txt`, 'utf8').trim();
 
     const quad = findGridQuad(cv, image);
     expect(quad).not.toBeNull();
