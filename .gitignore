@@ -29,3 +29,6 @@ dist-ssr
 .claude
 skills-lock.json
 .playwright-mcp
+
+tools/opencv-build/opencv.js
+tools/opencv-build/*.wasm
