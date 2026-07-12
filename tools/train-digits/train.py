@@ -57,19 +57,27 @@ def usable_fonts():
 
 
 def render_sample(font_path, digit, rng):
-    font = ImageFont.truetype(font_path, rng.randint(36, 52))
+    # Camera photos of newsprint are low-contrast (gray paper, soft focus,
+    # bold fonts) — augmentation must cover that range or the CNN misreads
+    # real scans while acing clean synthetic input.
+    font = ImageFont.truetype(font_path, rng.randint(36, 56))
     img = Image.new("L", (RENDER_SIZE, RENDER_SIZE), 255)
     draw = ImageDraw.Draw(img)
-    bbox = draw.textbbox((0, 0), str(digit), font=font)
+    stroke = rng.choice([0, 0, 0, 1, 1, 2])  # bold/heavy print variants
+    bbox = draw.textbbox((0, 0), str(digit), font=font, stroke_width=stroke)
     x = (RENDER_SIZE - (bbox[2] - bbox[0])) // 2 - bbox[0] + rng.randint(-3, 3)
     y = (RENDER_SIZE - (bbox[3] - bbox[1])) // 2 - bbox[1] + rng.randint(-3, 3)
-    draw.text((x, y), str(digit), font=font, fill=rng.randint(0, 60))
+    draw.text((x, y), str(digit), font=font, fill=0, stroke_width=stroke, stroke_fill=0)
     img = img.rotate(rng.uniform(-8, 8), fillcolor=255, resample=Image.BILINEAR)
-    if rng.random() < 0.5:
-        img = img.filter(ImageFilter.GaussianBlur(rng.uniform(0.3, 1.0)))
+    if rng.random() < 0.7:
+        img = img.filter(ImageFilter.GaussianBlur(rng.uniform(0.3, 1.6)))
     img = img.resize((DIGIT_SIZE, DIGIT_SIZE), Image.BILINEAR)
     arr = np.array(img, dtype=np.float32)
-    arr += rng.uniform(-15, 25)  # brightness jitter
+    # Remap levels: white paper -> bg_level, black ink -> ink_level, so the
+    # model sees everything from crisp white pages to dim gray newsprint.
+    bg_level = rng.uniform(120.0, 255.0)
+    ink_level = rng.uniform(10.0, bg_level - 60.0)
+    arr = ink_level + (arr / 255.0) * (bg_level - ink_level)
     arr += np.random.normal(0, rng.uniform(2, 8), arr.shape)  # sensor noise
     arr = np.clip(arr, 0, 255)
     return (255.0 - arr) / 255.0

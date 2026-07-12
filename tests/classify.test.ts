@@ -43,16 +43,53 @@ describe('isEmptyCell', () => {
 });
 
 describe('prepareDigit', () => {
+  // center of mass of the 28x28 output, for centering assertions
+  const centerOfMass = (out: Float32Array): { x: number; y: number } => {
+    let sx = 0;
+    let sy = 0;
+    let total = 0;
+    for (let y = 0; y < DIGIT_SIZE; y++) {
+      for (let x = 0; x < DIGIT_SIZE; x++) {
+        const v = out[y * DIGIT_SIZE + x];
+        sx += x * v;
+        sy += y * v;
+        total += v;
+      }
+    }
+    return { x: sx / total, y: sy / total };
+  };
+
   it('returns 784 values, ~0 for blank cells', () => {
-    const out = prepareDigit(makeImage(CELL_SIZE, CELL_SIZE));
+    const out = prepareDigit(makeImage(GRID_SIZE, GRID_SIZE), 40);
     expect(out).toHaveLength(DIGIT_SIZE * DIGIT_SIZE);
     expect(Math.max(...out)).toBeLessThan(0.05);
   });
 
   it('maps ink to values near 1', () => {
-    const cell = makeImage(CELL_SIZE, CELL_SIZE);
-    fillRect(cell, 15, 12, 20, 26, 0); // solid black blob
-    const out = prepareDigit(cell);
+    const grid = makeImage(GRID_SIZE, GRID_SIZE);
+    // digit-sized blob centered in cell 40 (row 4, col 4: x 200-250, y 200-250)
+    fillRect(grid, 215, 212, 20, 26, 0);
+    const out = prepareDigit(grid, 40);
     expect(Math.max(...out)).toBeGreaterThan(0.9);
+  });
+
+  it('re-centers a digit that sits off-center in its cell', () => {
+    const grid = makeImage(GRID_SIZE, GRID_SIZE);
+    // blob pushed into the bottom-right corner of cell 40, up to the cell edge
+    fillRect(grid, 235, 232, 14, 18, 0);
+    const out = prepareDigit(grid, 40);
+    const { x, y } = centerOfMass(out);
+    expect(Math.abs(x - (DIGIT_SIZE - 1) / 2)).toBeLessThan(3);
+    expect(Math.abs(y - (DIGIT_SIZE - 1) / 2)).toBeLessThan(3);
+  });
+
+  it('ignores grid-line bands when locating the digit', () => {
+    const grid = makeImage(GRID_SIZE, GRID_SIZE);
+    fillRect(grid, 200, 200, 3, GRID_SIZE - 200, 0); // vertical line at cell 40's left edge
+    fillRect(grid, 218, 214, 14, 20, 0); // the digit
+    const out = prepareDigit(grid, 40);
+    const { x } = centerOfMass(out);
+    // if the line were counted as ink, the window would be dragged far left
+    expect(Math.abs(x - (DIGIT_SIZE - 1) / 2)).toBeLessThan(4);
   });
 });
