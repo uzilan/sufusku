@@ -32,3 +32,5 @@ skills-lock.json
 
 tools/opencv-build/opencv.js
 tools/opencv-build/*.wasm
+
+tools/train-digits/.venv
