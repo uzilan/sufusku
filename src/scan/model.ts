@@ -16,10 +16,15 @@ export const wrapModel = (model: tf.LayersModel): DigitModel => ({
   async predict(batch, count) {
     if (count === 0) return [];
     const input = tf.tensor4d(batch, [count, DIGIT_SIZE, DIGIT_SIZE, 1]);
-    const output = model.predict(input) as tf.Tensor;
-    const probs = await output.data();
-    input.dispose();
-    output.dispose();
+    let output: tf.Tensor | undefined;
+    let probs: Float32Array | Int32Array | Uint8Array;
+    try {
+      output = model.predict(input) as tf.Tensor;
+      probs = await output.data();
+    } finally {
+      input.dispose();
+      output?.dispose();
+    }
     const predictions: DigitPrediction[] = [];
     for (let i = 0; i < count; i++) {
       let digit = 1;
