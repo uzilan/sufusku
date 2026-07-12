@@ -21,17 +21,19 @@ React 19 + TypeScript, Vite 8, MUI 9 (Emotion). Oxlint for linting (`.oxlintrc.j
 
 ## Architecture
 
-- `src/App.tsx` — entire application: board state, all Sudoku logic, and rendering. Not yet split into components/hooks.
-  - Board state: flat `Array<number | null>` of length 81 (`board[idx]`), plus `selectedCell` index.
-  - `getCellCoords(index)` converts a flat index to `{ row, col, box }` — the box formula is `Math.floor(row/3)*3 + Math.floor(col/3)`. This coordinate mapping is the basis for every row/column/box constraint check in the file.
-  - `getConflictingCells()` — O(n²) scan over all cell pairs sharing a row/col/box with equal values; returns a `Set` of conflicting indices, recomputed on every render.
-  - `getCandidates(index)` — computes the pencil-mark set for an empty cell by removing values already present among row/col/box peers.
-  - `getCellStyling(index)` — derives background/border/outline for a cell from selection, peer relation, matching-value highlight, and conflict state (conflict styling always takes priority over selection/peer styling).
-  - Keyboard input is wired via a `useEffect` on `window` `keydown` (digits 1-9 set value; Backspace/Delete/0 clear); on-screen digit pad is not yet implemented in `App.tsx` despite being in spec §5.2.
-  - Candidate row rendering keeps all 9 digit slots in the DOM at all times (eliminated candidates render `color: transparent` rather than being removed) specifically to prevent layout shift — see spec §2.2.
-- `src/theme.ts` — MUI dark theme (custom palette: indigo `#6366f1` primary, cyan `#06b6d4` secondary, deep navy background). Exported via `responsiveFontSizes`. Colors/spacing referenced directly as sx values in `App.tsx` should stay consistent with this theme and spec §3.
+App logic is split across `src/sudoku/`, `src/hooks/`, and `src/components/`; `src/App.tsx` just composes `Header` and `Board`.
+
+- `src/sudoku/coords.ts` — `getCellCoords(index)` converts a flat index to `{ row, col, box }` — the box formula is `Math.floor(row/3)*3 + Math.floor(col/3)`. This coordinate mapping is the basis for every row/column/box constraint check.
+- `src/sudoku/logic.ts` — pure functions over a `Board` (`Array<number | null>` of length 81):
+  - `getConflictingCells(board)` — O(n²) scan over all cell pairs sharing a row/col/box with equal values; returns a `Set` of conflicting indices, recomputed on every render.
+  - `getCandidates(board, index)` — computes the pencil-mark set for an empty cell by removing values already present among row/col/box peers.
+- `src/hooks/useSudokuBoard.ts` — owns `board` and `selectedCell` state, `setCellValue`, and the keyboard `useEffect` on `window` `keydown` (digits 1-9 set value; Backspace/Delete/0 clear; arrow keys move `selectedCell` by row/col, clamped at grid edges — no wraparound). Returns `{ board, selectedCell, setSelectedCell, setCellValue }`.
+- `src/components/Board.tsx` — renders the 9x9 grid; `getCellStyling(...)` (local to this file) derives background/border/outline per cell from selection, peer relation, matching-value highlight, and conflict state (conflict styling always takes priority over selection/peer styling). Delegates per-cell rendering to `Cell`.
+- `src/components/Cell.tsx` — presentational: renders either the resolved value or the candidate row for one cell, given precomputed styling/candidates as props. Candidate row rendering keeps all 9 digit slots in the DOM at all times (eliminated candidates render `color: transparent` rather than being removed) specifically to prevent layout shift — see spec §2.2.
+- `src/components/Header.tsx` — compact `AppBar`/`Toolbar` with the "Sufusku" title in Permanent Marker font (loaded via Google Fonts link in `index.html`); on-screen digit pad is not yet implemented despite being in spec §5.2.
+- `src/theme.ts` — MUI dark theme (custom palette: indigo `#6366f1` primary, cyan `#06b6d4` secondary, deep navy background). Exported via `responsiveFontSizes`. Colors/spacing referenced directly as sx values in components should stay consistent with this theme and spec §3.
 - `src/main.tsx` — React root + `ThemeProvider` wiring.
 
 ## Spec-implementation gaps
 
-`specification.md` describes a header/app-bar, on-screen input pad, and Clear Cell / Clear Grid controls (§3, §5.2, §5.3) that are not yet present in `src/App.tsx` — only the board grid and keyboard input exist today. When implementing these, follow the spec's exact interaction/visual rules rather than inventing new ones.
+`specification.md` describes an on-screen input pad and Clear Cell / Clear Grid controls (§5.2, §5.3) that are not yet present in the app — only the board grid, header title, and keyboard input (including arrow-key navigation) exist today. When implementing these, follow the spec's exact interaction/visual rules rather than inventing new ones.
