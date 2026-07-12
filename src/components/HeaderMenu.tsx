@@ -1,20 +1,24 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import type { MouseEvent } from 'react';
 import { Alert, IconButton, Menu, MenuItem, Portal, Snackbar } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 import { hasSolution, DEFAULT_SOLVE_BUDGET } from '../sudoku/solver';
 
+const ScanDialog = lazy(() => import('./ScanDialog'));
+
 interface HeaderMenuProps {
   board: BoardState;
   selectedCell: number | null;
   onClearAll: () => void;
   onSolveCell: (value: number) => void;
+  onScanAccept: (board: BoardState) => void;
 }
 
-const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell }: HeaderMenuProps) => {
+const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept }: HeaderMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [scanOpen, setScanOpen] = useState(false);
 
   const isCellEmpty = selectedCell !== null && board[selectedCell] === null;
 
@@ -51,6 +55,11 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell }: HeaderMenu
     else setMessage(`Multiple values possible: ${validValues.join(', ')}`);
   };
 
+  const handleScan = () => {
+    handleClose();
+    setScanOpen(true);
+  };
+
   return (
     <>
       <IconButton
@@ -63,6 +72,7 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell }: HeaderMenu
         <MenuItem onClick={handleSolveCell} disabled={!isCellEmpty}>
           Solve cell
         </MenuItem>
+        <MenuItem onClick={handleScan}>Scan puzzle</MenuItem>
         <MenuItem onClick={handleClearAll}>Clear all</MenuItem>
       </Menu>
       <Portal>
@@ -77,6 +87,18 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell }: HeaderMenu
           </Alert>
         </Snackbar>
       </Portal>
+      {scanOpen && (
+        <Suspense fallback={null}>
+          <ScanDialog
+            open={scanOpen}
+            onClose={() => setScanOpen(false)}
+            onAccept={(scanned) => {
+              onScanAccept(scanned);
+              setScanOpen(false);
+            }}
+          />
+        </Suspense>
+      )}
     </>
   );
 };

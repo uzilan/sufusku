@@ -11,6 +11,7 @@ interface HeaderProps {
   selectedCell: number | null;
   onClearAll: () => void;
   onSolveCell: (value: number) => void;
+  onScanAccept: (board: BoardState) => void;
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
@@ -22,6 +23,7 @@ const Header = ({
   selectedCell,
   onClearAll,
   onSolveCell,
+  onScanAccept,
   onUndo,
   onRedo,
   canUndo,
@@ -106,7 +108,13 @@ const Header = ({
           <RedoIcon />
         </IconButton>
         <Box sx={{ [landscapeQuery]: { order: 1 } }}>
-          <HeaderMenu board={board} selectedCell={selectedCell} onClearAll={onClearAll} onSolveCell={onSolveCell} />
+          <HeaderMenu
+            board={board}
+            selectedCell={selectedCell}
+            onClearAll={onClearAll}
+            onSolveCell={onSolveCell}
+            onScanAccept={onScanAccept}
+          />
         </Box>
       </Box>
     </Toolbar>
