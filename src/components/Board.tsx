@@ -53,7 +53,7 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
     <Box
       sx={{
         width: '100%',
-        maxWidth: { xs: '100vw', sm: '460px' },
+        maxWidth: '100vw',
         aspectRatio: '1',
         bgcolor: 'background.paper',
         borderRadius: 0,
@@ -63,6 +63,14 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
         gridTemplateColumns: 'repeat(9, 1fr)',
         gridTemplateRows: 'repeat(9, 1fr)',
         overflow: 'hidden',
+        '@media (min-width: 600px)': {
+          maxWidth: '460px',
+        },
+        '@media (max-height: 599.95px) and (orientation: landscape)': {
+          width: 'min(calc(100vh - 16px), calc(100vw - 280px))',
+          height: 'min(calc(100vh - 16px), calc(100vw - 280px))',
+          maxWidth: 'none',
+        },
       }}
     >
       {board.map((val, idx) => {
