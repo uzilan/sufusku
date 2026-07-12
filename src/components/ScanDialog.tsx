@@ -77,25 +77,35 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
     const start = async () => {
       let cv: CV;
       try {
-        [cv, stream] = await Promise.all([
+        const results = await Promise.allSettled([
           loadOpenCV(),
           navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }),
         ]);
+        const [cvResult, streamResult] = results;
+        if (streamResult.status === 'fulfilled') stream = streamResult.value;
+        if (cvResult.status === 'rejected' || streamResult.status === 'rejected') {
+          stream?.getTracks().forEach((t) => t.stop());
+          stream = null;
+          if (!cancelled) setCameraFailed(true);
+          return;
+        }
+        cv = cvResult.value;
       } catch {
         if (!cancelled) setCameraFailed(true);
         return;
       }
+      const activeStream = stream!; // guaranteed set: we returned above unless getUserMedia fulfilled
       void loadDigitModel(); // warm up in parallel; errors surface in runPipeline
       if (cancelled) {
-        stream.getTracks().forEach((t) => t.stop());
+        activeStream.getTracks().forEach((t) => t.stop());
         return;
       }
       const video = videoRef.current!;
-      video.srcObject = stream;
+      video.srcObject = activeStream;
       try {
         await video.play();
       } catch {
-        stream.getTracks().forEach((t) => t.stop());
+        activeStream.getTracks().forEach((t) => t.stop());
         if (!cancelled) setCameraFailed(true);
         return;
       }
@@ -139,7 +149,6 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
         const stable = stableQuadRef.current;
         if (stable && quadIsStable(stable.quad, quad)) {
           stable.count++;
-          stable.quad = quad;
           if (stable.count >= STABLE_FRAMES) {
             cancelAnimationFrame(rafId);
             cancelled = true;

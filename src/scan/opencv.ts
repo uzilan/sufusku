@@ -21,6 +21,9 @@ export const loadOpenCV = (): Promise<CV> => {
     };
     script.onerror = () => reject(new Error('Failed to load OpenCV'));
     document.head.appendChild(script);
+  }).catch((err) => {
+    cvPromise = null;
+    throw err;
   });
   return cvPromise;
 };

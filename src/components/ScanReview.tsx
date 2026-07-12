@@ -91,13 +91,17 @@ const ScanReview = ({ result, onRetake, onAccept }: ScanReviewProps) => {
       <Dialog open={pickerCell !== null} onClose={() => setPickerCell(null)}>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, p: 2 }}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-            <Button key={n} variant="outlined" onClick={() => setCell(pickerCell!, n)}>
+            <Button
+              key={n}
+              variant="outlined"
+              onClick={() => pickerCell !== null && setCell(pickerCell, n)}
+            >
               {n}
             </Button>
           ))}
           <Button
             variant="outlined"
-            onClick={() => setCell(pickerCell!, null)}
+            onClick={() => pickerCell !== null && setCell(pickerCell, null)}
             sx={{ gridColumn: 'span 3' }}
           >
             Clear

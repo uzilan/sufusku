@@ -45,6 +45,12 @@ export const wrapModel = (model: tf.LayersModel): DigitModel => ({
 let modelPromise: Promise<DigitModel> | null = null;
 
 export const loadDigitModel = (): Promise<DigitModel> => {
-  modelPromise ??= tf.loadLayersModel('/models/digits/model.json').then(wrapModel);
+  modelPromise ??= tf
+    .loadLayersModel('/models/digits/model.json')
+    .then(wrapModel)
+    .catch((err) => {
+      modelPromise = null;
+      throw err;
+    });
   return modelPromise;
 };
