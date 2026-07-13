@@ -4,6 +4,7 @@ import { Alert, IconButton, Menu, MenuItem, Portal, Snackbar } from '@mui/materi
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 import { hasSolution, DEFAULT_SOLVE_BUDGET } from '../sudoku/solver';
+import { findHintCell, type HintResult } from '../sudoku/hint';
 import HelpDialog from './HelpDialog';
 
 const ScanDialog = lazy(() => import('./ScanDialog'));
@@ -11,12 +12,24 @@ const ScanDialog = lazy(() => import('./ScanDialog'));
 interface HeaderMenuProps {
   board: BoardState;
   selectedCell: number | null;
+  pendingHint: HintResult | null;
+  onSelectCell: (index: number) => void;
+  onSetPendingHint: (hint: HintResult | null) => void;
   onClearAll: () => void;
   onSolveCell: (value: number) => void;
   onScanAccept: (board: BoardState) => void;
 }
 
-const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept }: HeaderMenuProps) => {
+const HeaderMenu = ({
+  board,
+  selectedCell,
+  pendingHint,
+  onSelectCell,
+  onSetPendingHint,
+  onClearAll,
+  onSolveCell,
+  onScanAccept,
+}: HeaderMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [scanOpen, setScanOpen] = useState(false);
@@ -57,6 +70,23 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept
     else setMessage(`Multiple values possible: ${validValues.join(', ')}`);
   };
 
+  const isBoardFull = !board.includes(null);
+
+  const handleHint = () => {
+    handleClose();
+    if (pendingHint !== null) {
+      onSolveCell(pendingHint.value);
+      return;
+    }
+    const found = findHintCell(board);
+    if (found === null) {
+      setMessage('No hint available right now.');
+      return;
+    }
+    onSelectCell(found.index);
+    onSetPendingHint(found);
+  };
+
   const handleScan = () => {
     handleClose();
     setScanOpen(true);
@@ -78,6 +108,9 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MenuItem onClick={handleSolveCell} disabled={!isCellEmpty}>
           Solve cell
+        </MenuItem>
+        <MenuItem onClick={handleHint} disabled={isBoardFull}>
+          {pendingHint !== null ? 'Reveal hint' : 'Hint'}
         </MenuItem>
         <MenuItem onClick={handleScan}>Scan puzzle</MenuItem>
         <MenuItem onClick={handleClearAll}>Clear all</MenuItem>

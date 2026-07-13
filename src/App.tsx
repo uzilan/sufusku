@@ -5,8 +5,20 @@ import NumberPad from './components/NumberPad';
 import { useSudokuBoard } from './hooks/useSudokuBoard';
 
 function App() {
-  const { board, selectedCell, setSelectedCell, setCellValue, setBoard, clearBoard, undo, redo, canUndo, canRedo } =
-    useSudokuBoard();
+  const {
+    board,
+    selectedCell,
+    setSelectedCell,
+    setCellValue,
+    setBoard,
+    clearBoard,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    pendingHint,
+    setPendingHint,
+  } = useSudokuBoard();
 
   return (
     <Box
@@ -24,6 +36,9 @@ function App() {
       <Header
         board={board}
         selectedCell={selectedCell}
+        pendingHint={pendingHint}
+        onSelectCell={setSelectedCell}
+        onSetPendingHint={setPendingHint}
         onClearAll={clearBoard}
         onSolveCell={setCellValue}
         onScanAccept={setBoard}
@@ -53,7 +68,7 @@ function App() {
           },
         }}
       >
-        <Board board={board} selectedCell={selectedCell} onSelectCell={setSelectedCell} />
+        <Board board={board} selectedCell={selectedCell} hintCell={pendingHint?.index ?? null} onSelectCell={setSelectedCell} />
         <NumberPad board={board} selectedCell={selectedCell} onSelect={setCellValue} />
       </Box>
     </Box>

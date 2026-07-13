@@ -6,6 +6,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import HeaderMenu from './HeaderMenu';
 import type { Board as BoardState } from '../sudoku/logic';
+import type { HintResult } from '../sudoku/hint';
 
 const landscapeQuery = '@media (max-height: 599.95px) and (orientation: landscape)';
 
@@ -26,6 +27,9 @@ const ThemeToggle = () => {
 interface HeaderProps {
   board: BoardState;
   selectedCell: number | null;
+  pendingHint: HintResult | null;
+  onSelectCell: (index: number) => void;
+  onSetPendingHint: (hint: HintResult | null) => void;
   onClearAll: () => void;
   onSolveCell: (value: number) => void;
   onScanAccept: (board: BoardState) => void;
@@ -38,6 +42,9 @@ interface HeaderProps {
 const Header = ({
   board,
   selectedCell,
+  pendingHint,
+  onSelectCell,
+  onSetPendingHint,
   onClearAll,
   onSolveCell,
   onScanAccept,
@@ -122,6 +129,9 @@ const Header = ({
           <HeaderMenu
             board={board}
             selectedCell={selectedCell}
+            pendingHint={pendingHint}
+            onSelectCell={onSelectCell}
+            onSetPendingHint={onSetPendingHint}
             onClearAll={onClearAll}
             onSolveCell={onSolveCell}
             onScanAccept={onScanAccept}
