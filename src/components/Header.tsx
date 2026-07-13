@@ -1,10 +1,27 @@
 import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
+import { useColorScheme } from '@mui/material/styles';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import HeaderMenu from './HeaderMenu';
 import type { Board as BoardState } from '../sudoku/logic';
 
 const landscapeQuery = '@media (max-height: 599.95px) and (orientation: landscape)';
+
+const ThemeToggle = () => {
+  const { mode, systemMode, setMode } = useColorScheme();
+  const resolved = (mode === 'system' ? systemMode : mode) ?? 'dark';
+  return (
+    <IconButton
+      onClick={() => setMode(resolved === 'dark' ? 'light' : 'dark')}
+      sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
+      aria-label={resolved === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+    >
+      {resolved === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+    </IconButton>
+  );
+};
 
 interface HeaderProps {
   board: BoardState;
@@ -93,17 +110,18 @@ const Header = ({
           },
         }}
       >
+        <ThemeToggle />
         <IconButton
           onClick={onUndo}
           disabled={!canUndo}
-          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
         >
           <UndoIcon />
         </IconButton>
         <IconButton
           onClick={onRedo}
           disabled={!canRedo}
-          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 4 } }}
         >
           <RedoIcon />
         </IconButton>
