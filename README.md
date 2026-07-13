@@ -17,6 +17,7 @@ A mobile-first Sudoku helper. Enter your own puzzle into a blank 9x9 grid — Su
 - Board persists across page reloads
 - Responsive layout for portrait, landscape, and desktop
 - Built-in **How to use** guide in the header menu
+- Dark/light theme toggle — follows your system preference until you override it
 
 ## Getting started
 
