@@ -30,6 +30,10 @@ const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
           display: 'grid',
           maxWidth: '180px',
         },
+        '@media (min-width: 600px) and (min-height: 600px)': {
+          display: 'grid',
+          maxWidth: '220px',
+        },
       }}
     >
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (

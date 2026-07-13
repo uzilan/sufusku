@@ -46,6 +46,11 @@ function App() {
             justifyContent: 'center',
             alignItems: 'center',
           },
+          '@media (min-width: 600px) and (min-height: 600px)': {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
         }}
       >
         <Board board={board} selectedCell={selectedCell} onSelectCell={setSelectedCell} />
