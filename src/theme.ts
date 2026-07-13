@@ -16,6 +16,8 @@ export interface BoardPalette {
   selectionBg: string;
   relatedTint: string; // same row/col/box as selection
   shareTint: string; // shares value with selection
+  hintBg: string; // pending-hint highlight background
+  hintBorder: string; // pending-hint highlight border
   padBorder: string; // NumberPad button border
 }
 
@@ -68,6 +70,8 @@ const theme = createTheme({
           selectionBg: 'rgba(99, 102, 241, 0.15)',
           relatedTint: 'rgba(99, 102, 241, 0.05)',
           shareTint: 'rgba(6, 182, 212, 0.2)',
+          hintBg: 'rgba(245, 158, 11, 0.25)',
+          hintBorder: '#f59e0b',
           padBorder: 'rgba(255, 255, 255, 0.08)',
         },
       },
@@ -109,6 +113,8 @@ const theme = createTheme({
           selectionBg: 'rgba(99, 102, 241, 0.15)',
           relatedTint: 'rgba(99, 102, 241, 0.07)',
           shareTint: 'rgba(6, 182, 212, 0.2)',
+          hintBg: 'rgba(245, 158, 11, 0.3)',
+          hintBorder: '#f59e0b',
           padBorder: 'rgba(0, 0, 0, 0.1)',
         },
       },

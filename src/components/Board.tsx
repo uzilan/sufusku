@@ -8,6 +8,7 @@ import Cell from './Cell';
 interface BoardProps {
   board: BoardState;
   selectedCell: number | null;
+  hintCell: number | null;
   onSelectCell: (index: number) => void;
 }
 
@@ -18,11 +19,13 @@ const getCellStyling = (
   conflictingCells: Set<number>,
   index: number,
   candidates: Set<number>,
+  hintCell: number | null,
   b: BoardPalette,
 ) => {
   const isSelected = selectedCell === index;
   const isConflicting = conflictingCells.has(index);
   const isSingleCandidate = board[index] === null && candidates.size === 1;
+  const isHinted = hintCell === index;
 
   let bgcolor = 'background.paper';
   let borderColor = b.padBorder;
@@ -30,6 +33,9 @@ const getCellStyling = (
   if (isConflicting) {
     bgcolor = b.conflictBg;
     borderColor = b.conflictBorder;
+  } else if (isHinted) {
+    bgcolor = b.hintBg;
+    borderColor = b.hintBorder;
   } else if (isSingleCandidate) {
     bgcolor = b.singleBg;
   }
@@ -45,11 +51,11 @@ const getCellStyling = (
       if (isConflicting) {
         bgcolor = b.conflictSelectedBg;
         borderColor = '#ef4444';
-      } else {
+      } else if (!isHinted) {
         borderColor = '#06b6d4';
         if (!isSingleCandidate) bgcolor = b.selectionBg;
       }
-    } else if (!isConflicting && !isSingleCandidate) {
+    } else if (!isConflicting && !isSingleCandidate && !isHinted) {
       if (sharesValue) bgcolor = b.shareTint;
       else if (isRelated) bgcolor = b.relatedTint;
     }
@@ -58,7 +64,7 @@ const getCellStyling = (
   return { bgcolor, borderColor, isConflicting };
 };
 
-const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
+const Board = ({ board, selectedCell, hintCell, onSelectCell }: BoardProps) => {
   const conflictingCells = getConflictingCells(board);
   const theme = useTheme();
   const b = (theme.vars ?? theme).palette.board;
@@ -95,7 +101,15 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
       {board.map((val, idx) => {
         const { row, col } = getCellCoords(idx);
         const candidates = getCandidates(board, idx);
-        const { bgcolor, borderColor, isConflicting } = getCellStyling(board, selectedCell, conflictingCells, idx, candidates, b);
+        const { bgcolor, borderColor, isConflicting } = getCellStyling(
+          board,
+          selectedCell,
+          conflictingCells,
+          idx,
+          candidates,
+          hintCell,
+          b,
+        );
 
         return (
           <Cell
