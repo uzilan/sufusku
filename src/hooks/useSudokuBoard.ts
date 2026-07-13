@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getCellCoords } from '../sudoku/coords';
 import type { Board } from '../sudoku/logic';
+import type { HintResult } from '../sudoku/hint';
 
 const STORAGE_KEY = 'sufusku-board';
 
@@ -24,6 +25,7 @@ export const useSudokuBoard = () => {
   const [selectedCell, setSelectedCell] = useState<number | null>(0);
   const [history, setHistory] = useState<Board[]>([]);
   const [future, setFuture] = useState<Board[]>([]);
+  const [pendingHint, setPendingHint] = useState<HintResult | null>(null);
 
   // Persist board to localStorage on every change
   useEffect(() => {
@@ -35,6 +37,7 @@ export const useSudokuBoard = () => {
     setHistory([...history, board]);
     setFuture([]);
     setBoard(newBoard);
+    setPendingHint(null);
   };
 
   // Set number in the selected cell
@@ -57,6 +60,7 @@ export const useSudokuBoard = () => {
     setHistory(history.slice(0, -1));
     setFuture([...future, board]);
     setBoard(prev);
+    setPendingHint(null);
   };
 
   const redo = () => {
@@ -65,6 +69,7 @@ export const useSudokuBoard = () => {
     setFuture(future.slice(0, -1));
     setHistory([...history, board]);
     setBoard(next);
+    setPendingHint(null);
   };
 
   // Keyboard input
@@ -117,5 +122,7 @@ export const useSudokuBoard = () => {
     redo,
     canUndo: history.length > 0,
     canRedo: future.length > 0,
+    pendingHint,
+    setPendingHint,
   };
 };

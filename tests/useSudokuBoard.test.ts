@@ -38,3 +38,39 @@ describe('useSudokuBoard.setBoard', () => {
     expect(result.current.canRedo).toBe(false);
   });
 });
+
+describe('useSudokuBoard.pendingHint', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('clears pending hint when a cell value changes', () => {
+    const { result } = renderHook(() => useSudokuBoard());
+    act(() => result.current.setPendingHint({ index: 5, value: 7 }));
+    expect(result.current.pendingHint).toEqual({ index: 5, value: 7 });
+    act(() => result.current.setCellValue(3));
+    expect(result.current.pendingHint).toBeNull();
+  });
+
+  it('clears pending hint on undo', () => {
+    const { result } = renderHook(() => useSudokuBoard());
+    act(() => result.current.setCellValue(3));
+    act(() => result.current.setPendingHint({ index: 5, value: 7 }));
+    act(() => result.current.undo());
+    expect(result.current.pendingHint).toBeNull();
+  });
+
+  it('clears pending hint on redo', () => {
+    const { result } = renderHook(() => useSudokuBoard());
+    act(() => result.current.setCellValue(3));
+    act(() => result.current.undo());
+    act(() => result.current.setPendingHint({ index: 5, value: 7 }));
+    act(() => result.current.redo());
+    expect(result.current.pendingHint).toBeNull();
+  });
+
+  it('clears pending hint when the board is replaced via setBoard', () => {
+    const { result } = renderHook(() => useSudokuBoard());
+    act(() => result.current.setPendingHint({ index: 5, value: 7 }));
+    act(() => result.current.setBoard(Array(81).fill(null)));
+    expect(result.current.pendingHint).toBeNull();
+  });
+});
