@@ -17,6 +17,7 @@ interface HeaderMenuProps {
   onSetPendingHint: (hint: HintResult | null) => void;
   onClearAll: () => void;
   onSolveCell: (value: number) => void;
+  onRevealHint: (index: number, value: number) => void;
   onScanAccept: (board: BoardState) => void;
 }
 
@@ -28,6 +29,7 @@ const HeaderMenu = ({
   onSetPendingHint,
   onClearAll,
   onSolveCell,
+  onRevealHint,
   onScanAccept,
 }: HeaderMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -75,7 +77,8 @@ const HeaderMenu = ({
   const handleHint = () => {
     handleClose();
     if (pendingHint !== null) {
-      onSolveCell(pendingHint.value);
+      onRevealHint(pendingHint.index, pendingHint.value);
+      onSelectCell(pendingHint.index);
       return;
     }
     const found = findHintCell(board);

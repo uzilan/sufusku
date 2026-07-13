@@ -32,6 +32,7 @@ interface HeaderProps {
   onSetPendingHint: (hint: HintResult | null) => void;
   onClearAll: () => void;
   onSolveCell: (value: number) => void;
+  onRevealHint: (index: number, value: number) => void;
   onScanAccept: (board: BoardState) => void;
   onUndo: () => void;
   onRedo: () => void;
@@ -47,6 +48,7 @@ const Header = ({
   onSetPendingHint,
   onClearAll,
   onSolveCell,
+  onRevealHint,
   onScanAccept,
   onUndo,
   onRedo,
@@ -134,6 +136,7 @@ const Header = ({
             onSetPendingHint={onSetPendingHint}
             onClearAll={onClearAll}
             onSolveCell={onSolveCell}
+            onRevealHint={onRevealHint}
             onScanAccept={onScanAccept}
           />
         </Box>

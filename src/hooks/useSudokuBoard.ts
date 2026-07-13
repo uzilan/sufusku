@@ -48,6 +48,14 @@ export const useSudokuBoard = () => {
     applyBoard(newBoard);
   };
 
+  // Set a specific cell's value directly, independent of `selectedCell` — used by
+  // the Hint reveal step, where the target cell may no longer be selected.
+  const setCellValueAt = (index: number, value: number) => {
+    const newBoard = [...board];
+    newBoard[index] = value;
+    applyBoard(newBoard);
+  };
+
   // Reset the board to its initial blank state
   const clearBoard = () => {
     applyBoard(Array(81).fill(null));
@@ -116,6 +124,7 @@ export const useSudokuBoard = () => {
     selectedCell,
     setSelectedCell,
     setCellValue,
+    setCellValueAt,
     setBoard: applyBoard,
     clearBoard,
     undo,

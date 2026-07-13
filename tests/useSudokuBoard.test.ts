@@ -74,3 +74,17 @@ describe('useSudokuBoard.pendingHint', () => {
     expect(result.current.pendingHint).toBeNull();
   });
 });
+
+describe('useSudokuBoard.setCellValueAt', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('writes to the given index regardless of selectedCell (hint reveal after selection change)', () => {
+    const { result } = renderHook(() => useSudokuBoard());
+    // Simulate: hint found cell 40, then user selects a different cell (12) before revealing.
+    act(() => result.current.setSelectedCell(12));
+    act(() => result.current.setCellValueAt(40, 5));
+    expect(result.current.board[40]).toBe(5);
+    expect(result.current.board[12]).toBeNull();
+    expect(result.current.selectedCell).toBe(12);
+  });
+});

@@ -10,6 +10,7 @@ function App() {
     selectedCell,
     setSelectedCell,
     setCellValue,
+    setCellValueAt,
     setBoard,
     clearBoard,
     undo,
@@ -41,6 +42,7 @@ function App() {
         onSetPendingHint={setPendingHint}
         onClearAll={clearBoard}
         onSolveCell={setCellValue}
+        onRevealHint={setCellValueAt}
         onScanAccept={setBoard}
         onUndo={undo}
         onRedo={redo}
