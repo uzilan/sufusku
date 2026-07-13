@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 interface CellProps {
   row: number;
@@ -16,8 +17,10 @@ const Cell = ({ row, col, value, isSelected, isConflicting, bgcolor, borderColor
   const hasValue = value !== null;
   const borderTopWidth = row === 0 ? '0px' : row % 3 === 0 ? '2.5px' : '0.5px';
   const borderLeftWidth = col === 0 ? '0px' : col % 3 === 0 ? '2.5px' : '0.5px';
-  const borderTopColor = row % 3 === 0 ? '#4b5563' : 'rgba(255,255,255,0.05)';
-  const borderLeftColor = col % 3 === 0 ? '#4b5563' : 'rgba(255,255,255,0.05)';
+  const theme = useTheme();
+  const b = (theme.vars ?? theme).palette.board;
+  const borderTopColor = row % 3 === 0 ? b.line : b.subline;
+  const borderLeftColor = col % 3 === 0 ? b.line : b.subline;
 
   return (
     <Box
@@ -31,15 +34,15 @@ const Cell = ({ row, col, value, isSelected, isConflicting, bgcolor, borderColor
         cursor: 'pointer',
         borderTop: `${borderTopWidth} solid ${borderTopColor}`,
         borderLeft: `${borderLeftWidth} solid ${borderLeftColor}`,
-        borderBottom: row === 8 ? 'none' : '0.5px solid rgba(255,255,255,0.05)',
-        borderRight: col === 8 ? 'none' : '0.5px solid rgba(255,255,255,0.05)',
+        borderBottom: row === 8 ? 'none' : `0.5px solid ${b.subline}`,
+        borderRight: col === 8 ? 'none' : `0.5px solid ${b.subline}`,
         outline: isSelected ? `2px solid ${borderColor}` : 'none',
         outlineOffset: '-2px',
         zIndex: isSelected ? 10 : 1,
         userSelect: 'none',
         touchAction: 'manipulation',
         '&:hover': {
-          bgcolor: 'rgba(255, 255, 255, 0.03)',
+          bgcolor: b.hoverBg,
         },
       }}
     >
@@ -48,7 +51,7 @@ const Cell = ({ row, col, value, isSelected, isConflicting, bgcolor, borderColor
           sx={{
             fontWeight: 800,
             fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.75rem' },
-            color: isConflicting ? '#f87171' : 'secondary.main',
+            color: isConflicting ? b.conflictText : 'secondary.main',
             lineHeight: 1,
           }}
         >

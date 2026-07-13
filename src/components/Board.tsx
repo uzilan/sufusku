@@ -1,6 +1,8 @@
 import { Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { getCellCoords } from '../sudoku/coords';
 import { getCandidates, getConflictingCells, type Board as BoardState } from '../sudoku/logic';
+import type { BoardPalette } from '../theme';
 import Cell from './Cell';
 
 interface BoardProps {
@@ -16,19 +18,20 @@ const getCellStyling = (
   conflictingCells: Set<number>,
   index: number,
   candidates: Set<number>,
+  b: BoardPalette,
 ) => {
   const isSelected = selectedCell === index;
   const isConflicting = conflictingCells.has(index);
   const isSingleCandidate = board[index] === null && candidates.size === 1;
 
   let bgcolor = 'background.paper';
-  let borderColor = 'rgba(255, 255, 255, 0.08)';
+  let borderColor = b.padBorder;
 
   if (isConflicting) {
-    bgcolor = 'rgba(239, 68, 68, 0.2)';
-    borderColor = 'rgba(239, 68, 68, 0.4)';
+    bgcolor = b.conflictBg;
+    borderColor = b.conflictBorder;
   } else if (isSingleCandidate) {
-    bgcolor = 'rgba(34, 197, 94, 0.2)';
+    bgcolor = b.singleBg;
   }
 
   if (selectedCell !== null) {
@@ -40,15 +43,15 @@ const getCellStyling = (
 
     if (isSelected) {
       if (isConflicting) {
-        bgcolor = 'rgba(239, 68, 68, 0.25)';
+        bgcolor = b.conflictSelectedBg;
         borderColor = '#ef4444';
       } else {
         borderColor = '#06b6d4';
-        if (!isSingleCandidate) bgcolor = 'rgba(99, 102, 241, 0.15)';
+        if (!isSingleCandidate) bgcolor = b.selectionBg;
       }
     } else if (!isConflicting && !isSingleCandidate) {
-      if (sharesValue) bgcolor = 'rgba(6, 182, 212, 0.2)';
-      else if (isRelated) bgcolor = 'rgba(99, 102, 241, 0.05)';
+      if (sharesValue) bgcolor = b.shareTint;
+      else if (isRelated) bgcolor = b.relatedTint;
     }
   }
 
@@ -57,6 +60,8 @@ const getCellStyling = (
 
 const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
   const conflictingCells = getConflictingCells(board);
+  const theme = useTheme();
+  const b = (theme.vars ?? theme).palette.board;
 
   return (
     <Box
@@ -66,8 +71,8 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
         aspectRatio: '1',
         bgcolor: 'background.paper',
         borderRadius: 0,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-        border: '3px solid #1f2937',
+        boxShadow: b.shadow,
+        border: `3px solid ${b.frame}`,
         display: 'grid',
         gridTemplateColumns: 'repeat(9, 1fr)',
         gridTemplateRows: 'repeat(9, 1fr)',
@@ -90,7 +95,7 @@ const Board = ({ board, selectedCell, onSelectCell }: BoardProps) => {
       {board.map((val, idx) => {
         const { row, col } = getCellCoords(idx);
         const candidates = getCandidates(board, idx);
-        const { bgcolor, borderColor, isConflicting } = getCellStyling(board, selectedCell, conflictingCells, idx, candidates);
+        const { bgcolor, borderColor, isConflicting } = getCellStyling(board, selectedCell, conflictingCells, idx, candidates, b);
 
         return (
           <Cell
