@@ -13,6 +13,7 @@ A mobile-first Sudoku helper. Enter your own puzzle into a blank 9x9 grid — Su
 - Green highlight for cells with exactly one valid remaining value
 - **Scan puzzle** — point your camera at a printed sudoku and the app reads it in (on-device: OpenCV.js grid detection + a small TensorFlow.js digit CNN), with a review screen that flags uncertain cells for correction before accepting
 - **Solve cell** — runs a backtracking solver to tell you the valid value(s) for the selected cell, or fills it in automatically when there's only one
+- **Hint** — finds a solvable cell and highlights it amber; tap again to reveal its value
 - Undo / redo, with keyboard shortcuts (`Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z`)
 - Board persists across page reloads
 - Responsive layout for portrait, landscape, and desktop

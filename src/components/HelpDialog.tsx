@@ -52,7 +52,10 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         marks a conflict: the same number appears twice in a row, column or box. A green
         background
         <Swatch color="rgba(34, 197, 94, 0.6)" />
-        marks an empty cell where only one number can go — a good place to play next.
+        marks an empty cell where only one number can go — a good place to play next. An amber
+        background
+        <Swatch color="rgba(245, 158, 11, 0.6)" />
+        marks the cell found by <strong>Hint</strong>.
       </Section>
       <Section title="Scan a puzzle">
         Open the menu and choose <strong>Scan puzzle</strong>, then allow camera access. Fill the
@@ -72,10 +75,11 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         Use the arrows in the header, or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z. Accepting a scan counts
         as one step, so a single undo restores your previous board.
       </Section>
-      <Section title="Solve cell and Clear all">
+      <Section title="Solve cell, Hint and Clear all">
         With an empty cell selected, <strong>Solve cell</strong> fills it in when only one value
-        can possibly go there. <strong>Clear all</strong> empties the whole board — undo brings it
-        back.
+        can possibly go there. <strong>Hint</strong> finds a solvable cell for you and highlights
+        it amber — tap it again (now labeled <strong>Reveal hint</strong>) to fill in its value.
+        <strong> Clear all</strong> empties the whole board — undo brings it back.
       </Section>
     </DialogContent>
   </Dialog>
