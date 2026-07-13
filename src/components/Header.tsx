@@ -15,7 +15,7 @@ const ThemeToggle = () => {
   return (
     <IconButton
       onClick={() => setMode(resolved === 'dark' ? 'light' : 'dark')}
-      sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
+      sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
       aria-label={resolved === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       {resolved === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
@@ -106,19 +106,19 @@ const Header = ({
         <IconButton
           onClick={onUndo}
           disabled={!canUndo}
-          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 1 } }}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
         >
           <UndoIcon />
         </IconButton>
         <IconButton
           onClick={onRedo}
           disabled={!canRedo}
-          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 4 } }}
         >
           <RedoIcon />
         </IconButton>
         <ThemeToggle />
-        <Box sx={{ [landscapeQuery]: { order: 4 } }}>
+        <Box sx={{ [landscapeQuery]: { order: 1 } }}>
           <HeaderMenu
             board={board}
             selectedCell={selectedCell}
