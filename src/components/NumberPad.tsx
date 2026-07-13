@@ -1,23 +1,25 @@
 import { Box } from '@mui/material';
+import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 
 interface NumberPadProps {
   board: BoardState;
   selectedCell: number | null;
-  onSelect: (value: number) => void;
+  onSelect: (value: number | null) => void;
 }
 
 const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
   if (selectedCell === null) return null;
 
   const candidates = getCandidates(board, selectedCell);
+  const isEmpty = board[selectedCell] === null;
 
   return (
     <Box
       sx={{
         display: 'none',
         gridTemplateColumns: 'repeat(3, 1fr)',
-        gridTemplateRows: 'repeat(3, 1fr)',
+        gridTemplateRows: 'repeat(3, 1fr) auto',
         gap: 1,
         width: '100%',
         maxWidth: '260px',
@@ -61,6 +63,33 @@ const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
           {num}
         </Box>
       ))}
+      <Box
+        onClick={isEmpty ? undefined : () => onSelect(null)}
+        aria-label="Clear cell"
+        aria-disabled={isEmpty}
+        sx={{
+          gridColumn: '1 / -1',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 0.75,
+          py: 1,
+          borderRadius: 1,
+          bgcolor: 'background.paper',
+          border: '1px solid',
+          borderColor: 'board.padBorder',
+          cursor: isEmpty ? 'default' : 'pointer',
+          userSelect: 'none',
+          touchAction: 'manipulation',
+          fontWeight: 700,
+          fontSize: '0.95rem',
+          color: 'text.secondary',
+          opacity: isEmpty ? 0.4 : 1,
+        }}
+      >
+        <BackspaceOutlinedIcon fontSize="small" />
+        Clear
+      </Box>
     </Box>
   );
 };
