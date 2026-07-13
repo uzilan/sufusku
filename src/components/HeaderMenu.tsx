@@ -4,6 +4,7 @@ import { Alert, IconButton, Menu, MenuItem, Portal, Snackbar } from '@mui/materi
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 import { hasSolution, DEFAULT_SOLVE_BUDGET } from '../sudoku/solver';
+import HelpDialog from './HelpDialog';
 
 const ScanDialog = lazy(() => import('./ScanDialog'));
 
@@ -19,6 +20,7 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [scanOpen, setScanOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const isCellEmpty = selectedCell !== null && board[selectedCell] === null;
 
@@ -60,6 +62,11 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept
     setScanOpen(true);
   };
 
+  const handleHelp = () => {
+    handleClose();
+    setHelpOpen(true);
+  };
+
   return (
     <>
       <IconButton
@@ -74,7 +81,9 @@ const HeaderMenu = ({ board, selectedCell, onClearAll, onSolveCell, onScanAccept
         </MenuItem>
         <MenuItem onClick={handleScan}>Scan puzzle</MenuItem>
         <MenuItem onClick={handleClearAll}>Clear all</MenuItem>
+        <MenuItem onClick={handleHelp}>How to use</MenuItem>
       </Menu>
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
       <Portal>
         <Snackbar
           open={message !== null}
