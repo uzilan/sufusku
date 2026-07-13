@@ -17,15 +17,15 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </Box>
 );
 
-// Inline swatch matching the review screen's suspicious-cell highlight
-const AmberSwatch = () => (
+// Inline swatch matching an in-app cell highlight color
+const Swatch = ({ color }: { color: string }) => (
   <Box
     component="span"
     sx={{
       display: 'inline-block',
       width: 12,
       height: 12,
-      bgcolor: 'warning.main',
+      bgcolor: color,
       borderRadius: 0.5,
       verticalAlign: 'baseline',
       mx: 0.5,
@@ -46,6 +46,14 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         Tap a cell to select it, then type 1–9 on a keyboard or tap the number pad on your phone.
         Press 0, Backspace or Delete to clear a cell. Arrow keys move the selection.
       </Section>
+      <Section title="Cell colors">
+        A red background
+        <Swatch color="rgba(239, 68, 68, 0.6)" />
+        marks a conflict: the same number appears twice in a row, column or box. A green
+        background
+        <Swatch color="rgba(34, 197, 94, 0.6)" />
+        marks an empty cell where only one number can go — a good place to play next.
+      </Section>
       <Section title="Scan a puzzle">
         Open the menu and choose <strong>Scan puzzle</strong>, then allow camera access. Fill the
         frame with the puzzle and avoid glare. Hold steady — the photo is taken automatically when
@@ -54,7 +62,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
       </Section>
       <Section title="Fix suspicious cells">
         After scanning, a review screen shows what was read. Amber cells
-        <AmberSwatch />
+        <Swatch color="warning.main" />
         are ones the scanner is unsure about, or values that clash with another cell. Tap any cell
         to correct or clear it, and check the rest too — a confident scan can still be wrong.
         <strong> Retake</strong> scans again; <strong>Accept</strong> puts the result on the board,
