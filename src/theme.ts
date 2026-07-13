@@ -56,7 +56,7 @@ const theme = createTheme({
         divider: 'rgba(255, 255, 255, 0.08)',
         board: {
           line: '#4b5563',
-          subline: 'rgba(255, 255, 255, 0.05)',
+          subline: 'rgba(255, 255, 255, 0.3)',
           frame: '#1f2937',
           shadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
           hoverBg: 'rgba(255, 255, 255, 0.03)',
@@ -97,7 +97,7 @@ const theme = createTheme({
         divider: 'rgba(0, 0, 0, 0.08)',
         board: {
           line: '#94a3b8',
-          subline: 'rgba(0, 0, 0, 0.08)',
+          subline: 'rgba(0, 0, 0, 0.3)',
           frame: '#cbd5e1',
           shadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
           hoverBg: 'rgba(0, 0, 0, 0.03)',

@@ -24,7 +24,7 @@ const CandidateRow = ({ candidates }: CandidateRowProps) => (
           fontSize: { xs: '9px', sm: '10px', md: '11px' },
           fontWeight: 700,
           color: candidates.has(num) ? 'primary.light' : 'transparent',
-          opacity: candidates.has(num) ? 0.35 : 1,
+          opacity: candidates.has(num) ? 0.3 : 1,
           lineHeight: 1,
         }}
       >
