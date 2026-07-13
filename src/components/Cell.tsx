@@ -8,13 +8,14 @@ interface CellProps {
   value: number | null;
   isSelected: boolean;
   isConflicting: boolean;
+  isGiven: boolean;
   bgcolor: string;
   borderColor: string;
   candidates: Set<number>;
   onClick: () => void;
 }
 
-const Cell = ({ row, col, value, isSelected, isConflicting, bgcolor, borderColor, candidates, onClick }: CellProps) => {
+const Cell = ({ row, col, value, isSelected, isConflicting, isGiven, bgcolor, borderColor, candidates, onClick }: CellProps) => {
   const hasValue = value !== null;
   const borderTopWidth = row === 0 ? '0px' : row % 3 === 0 ? '2.5px' : '0.5px';
   const borderLeftWidth = col === 0 ? '0px' : col % 3 === 0 ? '2.5px' : '0.5px';
@@ -52,7 +53,7 @@ const Cell = ({ row, col, value, isSelected, isConflicting, bgcolor, borderColor
           sx={{
             fontWeight: 800,
             fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.75rem' },
-            color: isConflicting ? b.conflictText : 'secondary.main',
+            color: isConflicting ? b.conflictText : isGiven ? b.givenText : 'secondary.main',
             lineHeight: 1,
           }}
         >

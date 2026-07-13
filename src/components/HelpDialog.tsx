@@ -44,7 +44,9 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
     <DialogContent dividers>
       <Section title="Enter numbers">
         Tap a cell to select it, then type 1–9 on a keyboard or tap the number pad on your phone.
-        Press 0, Backspace or Delete to clear a cell. Arrow keys move the selection.
+        Press 0, Backspace or Delete to clear a cell. Arrow keys move the selection. Cells filled
+        by a scan are read-only — the number pad's <strong>Clear</strong> button dims for them, the
+        same as it does for an already-empty cell.
       </Section>
       <Section title="Cell colors">
         A red background
@@ -55,13 +57,16 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         marks an empty cell where only one number can go — a good place to play next. An amber
         background
         <Swatch color="rgba(245, 158, 11, 0.6)" />
-        marks the cell found by <strong>Hint</strong>.
+        marks the cell found by <strong>Hint</strong>. A gray background
+        <Swatch color="rgba(148, 163, 184, 0.5)" />
+        marks a cell filled by a scan — it's read-only until you clear the board or scan again. The
+        <strong> Legend</strong> bar at the bottom of the screen has the full list.
       </Section>
       <Section title="Scan a puzzle">
         Open the menu and choose <strong>Scan puzzle</strong>, then allow camera access. Fill the
         frame with the puzzle and avoid glare. Hold steady — the photo is taken automatically when
-        the grid is recognized. If the camera is unavailable, you can pick a photo from your
-        gallery instead.
+        the grid is recognized. Prefer to use an existing photo? Tap the gallery icon in the
+        top-left corner instead — it works the same way whether or not the camera is available.
       </Section>
       <Section title="Fix suspicious cells">
         After scanning, a review screen shows what was read. Amber cells
@@ -72,8 +77,8 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         replacing whatever was there.
       </Section>
       <Section title="Undo and redo">
-        Use the arrows in the header, or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z. Accepting a scan counts
-        as one step, so a single undo restores your previous board.
+        Use the arrows in the header, or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z. Accepting a scan sets a
+        new baseline — undo only steps back through edits made after that scan, not past it.
       </Section>
       <Section title="Solve cell, Hint and Clear all">
         With an empty cell selected, <strong>Solve cell</strong> fills it in when only one value

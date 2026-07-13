@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Box, Button, Dialog, IconButton, Snackbar, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import type { Board } from '../sudoku/logic';
 import { classifyGrid, GRID_SIZE, type RawImage, type ScanResult } from '../scan/classify';
 import { findGridQuad, warpGrid, type Quad } from '../scan/detect';
@@ -213,6 +214,18 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
         >
           <CloseIcon />
         </IconButton>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void handleFile(file);
+            e.target.value = '';
+          }}
+        />
 
         {phase === 'review' && result ? (
           <ScanReview result={result} onRetake={() => setPhase('viewfinder')} onAccept={onAccept} />
@@ -234,18 +247,6 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
             <Button variant="contained" onClick={() => fileInputRef.current?.click()}>
               Choose photo
             </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              hidden
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) void handleFile(file);
-                e.target.value = '';
-              }}
-            />
           </Box>
         ) : (
           <Box sx={{ position: 'relative', height: '100%' }}>
@@ -281,6 +282,23 @@ const ScanDialog = ({ open, onClose, onAccept }: ScanDialogProps) => {
                   ? 'Reading puzzle…'
                   : 'Fill the frame with the puzzle. Avoid glare.'}
               </Typography>
+            )}
+            {phase === 'viewfinder' && (
+              <IconButton
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Upload photo instead"
+                sx={{
+                  position: 'absolute',
+                  top: 8,
+                  left: 8,
+                  zIndex: 2,
+                  color: 'secondary.main',
+                  bgcolor: 'rgba(0, 0, 0, 0.4)',
+                  '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.55)' },
+                }}
+              >
+                <PhotoLibraryIcon />
+              </IconButton>
             )}
           </Box>
         )}

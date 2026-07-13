@@ -9,6 +9,7 @@ interface BoardProps {
   board: BoardState;
   selectedCell: number | null;
   hintCell: number | null;
+  givenCells: Set<number>;
   onSelectCell: (index: number) => void;
 }
 
@@ -20,12 +21,14 @@ const getCellStyling = (
   index: number,
   candidates: Set<number>,
   hintCell: number | null,
+  givenCells: Set<number>,
   b: BoardPalette,
 ) => {
   const isSelected = selectedCell === index;
   const isConflicting = conflictingCells.has(index);
   const isSingleCandidate = board[index] === null && candidates.size === 1;
   const isHinted = hintCell === index;
+  const isGiven = givenCells.has(index);
 
   let bgcolor = 'background.paper';
   let borderColor = b.padBorder;
@@ -38,6 +41,8 @@ const getCellStyling = (
     borderColor = b.hintBorder;
   } else if (isSingleCandidate) {
     bgcolor = b.singleBg;
+  } else if (isGiven) {
+    bgcolor = b.givenBg;
   }
 
   if (selectedCell !== null) {
@@ -53,9 +58,9 @@ const getCellStyling = (
         borderColor = '#ef4444';
       } else if (!isHinted) {
         borderColor = '#06b6d4';
-        if (!isSingleCandidate) bgcolor = b.selectionBg;
+        if (!isSingleCandidate && !isGiven) bgcolor = b.selectionBg;
       }
-    } else if (!isConflicting && !isSingleCandidate && !isHinted) {
+    } else if (!isConflicting && !isSingleCandidate && !isHinted && !isGiven) {
       if (sharesValue) bgcolor = b.shareTint;
       else if (isRelated) bgcolor = b.relatedTint;
     }
@@ -64,7 +69,7 @@ const getCellStyling = (
   return { bgcolor, borderColor, isConflicting };
 };
 
-const Board = ({ board, selectedCell, hintCell, onSelectCell }: BoardProps) => {
+const Board = ({ board, selectedCell, hintCell, givenCells, onSelectCell }: BoardProps) => {
   const conflictingCells = getConflictingCells(board);
   const theme = useTheme();
   const b = (theme.vars ?? theme).palette.board;
@@ -108,6 +113,7 @@ const Board = ({ board, selectedCell, hintCell, onSelectCell }: BoardProps) => {
           idx,
           candidates,
           hintCell,
+          givenCells,
           b,
         );
 
@@ -119,6 +125,7 @@ const Board = ({ board, selectedCell, hintCell, onSelectCell }: BoardProps) => {
             value={val}
             isSelected={selectedCell === idx}
             isConflicting={isConflicting}
+            isGiven={givenCells.has(idx)}
             bgcolor={bgcolor}
             borderColor={borderColor}
             candidates={candidates}

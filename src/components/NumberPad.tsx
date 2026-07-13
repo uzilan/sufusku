@@ -5,14 +5,17 @@ import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 interface NumberPadProps {
   board: BoardState;
   selectedCell: number | null;
+  givenCells: Set<number>;
   onSelect: (value: number | null) => void;
 }
 
-const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
+const NumberPad = ({ board, selectedCell, givenCells, onSelect }: NumberPadProps) => {
   if (selectedCell === null) return null;
 
   const candidates = getCandidates(board, selectedCell);
   const isEmpty = board[selectedCell] === null;
+  const isGiven = givenCells.has(selectedCell);
+  const isClearDisabled = isEmpty || isGiven;
 
   return (
     <Box
@@ -64,9 +67,9 @@ const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
         </Box>
       ))}
       <Box
-        onClick={isEmpty ? undefined : () => onSelect(null)}
+        onClick={isClearDisabled ? undefined : () => onSelect(null)}
         aria-label="Clear cell"
-        aria-disabled={isEmpty}
+        aria-disabled={isClearDisabled}
         sx={{
           gridColumn: '1 / -1',
           display: 'flex',
@@ -78,13 +81,13 @@ const NumberPad = ({ board, selectedCell, onSelect }: NumberPadProps) => {
           bgcolor: 'background.paper',
           border: '1px solid',
           borderColor: 'board.padBorder',
-          cursor: isEmpty ? 'default' : 'pointer',
+          cursor: isClearDisabled ? 'default' : 'pointer',
           userSelect: 'none',
           touchAction: 'manipulation',
           fontWeight: 700,
           fontSize: '0.95rem',
           color: 'text.secondary',
-          opacity: isEmpty ? 0.4 : 1,
+          opacity: isClearDisabled ? 0.4 : 1,
         }}
       >
         <BackspaceOutlinedIcon fontSize="small" />

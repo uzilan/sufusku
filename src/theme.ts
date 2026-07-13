@@ -12,12 +12,14 @@ export interface BoardPalette {
   conflictSelectedBg: string;
   conflictBorder: string;
   conflictText: string;
+  givenText: string; // scanned/read-only cell digit color
   singleBg: string; // single-remaining-candidate green
   selectionBg: string;
   relatedTint: string; // same row/col/box as selection
   shareTint: string; // shares value with selection
   hintBg: string; // pending-hint highlight background
   hintBorder: string; // pending-hint highlight border
+  givenBg: string; // scanned/read-only cell background
   padBorder: string; // NumberPad button border
 }
 
@@ -66,12 +68,14 @@ const theme = createTheme({
           conflictSelectedBg: 'rgba(239, 68, 68, 0.25)',
           conflictBorder: 'rgba(239, 68, 68, 0.4)',
           conflictText: '#f87171',
+          givenText: '#9ca3af',
           singleBg: 'rgba(34, 197, 94, 0.2)',
           selectionBg: 'rgba(99, 102, 241, 0.15)',
           relatedTint: 'rgba(99, 102, 241, 0.05)',
           shareTint: 'rgba(6, 182, 212, 0.2)',
           hintBg: 'rgba(245, 158, 11, 0.25)',
           hintBorder: '#f59e0b',
+          givenBg: 'rgba(148, 163, 184, 0.1)',
           padBorder: 'rgba(255, 255, 255, 0.08)',
         },
       },
@@ -109,12 +113,14 @@ const theme = createTheme({
           conflictSelectedBg: 'rgba(239, 68, 68, 0.2)',
           conflictBorder: 'rgba(239, 68, 68, 0.5)',
           conflictText: '#dc2626',
+          givenText: '#64748b',
           singleBg: 'rgba(34, 197, 94, 0.25)',
           selectionBg: 'rgba(99, 102, 241, 0.15)',
           relatedTint: 'rgba(99, 102, 241, 0.07)',
           shareTint: 'rgba(6, 182, 212, 0.2)',
           hintBg: 'rgba(245, 158, 11, 0.3)',
           hintBorder: '#f59e0b',
+          givenBg: 'rgba(100, 116, 139, 0.12)',
           padBorder: 'rgba(0, 0, 0, 0.1)',
         },
       },

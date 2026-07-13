@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import Board from './components/Board';
 import Header from './components/Header';
+import LegendDrawer from './components/LegendDrawer';
 import NumberPad from './components/NumberPad';
 import { useSudokuBoard } from './hooks/useSudokuBoard';
 
@@ -11,7 +12,7 @@ function App() {
     setSelectedCell,
     setCellValue,
     setCellValueAt,
-    setBoard,
+    acceptScan,
     clearBoard,
     undo,
     redo,
@@ -19,6 +20,7 @@ function App() {
     canRedo,
     pendingHint,
     setPendingHint,
+    givenCells,
   } = useSudokuBoard();
 
   return (
@@ -28,9 +30,12 @@ function App() {
         flexDirection: 'column',
         minHeight: '100vh',
         bgcolor: 'background.default',
+        pb: '32px',
         '@media (max-height: 599.95px) and (orientation: landscape)': {
           flexDirection: 'row',
           height: '100vh',
+          pb: 0,
+          pr: '32px',
         },
       }}
     >
@@ -43,7 +48,7 @@ function App() {
         onClearAll={clearBoard}
         onSolveCell={setCellValue}
         onRevealHint={setCellValueAt}
-        onScanAccept={setBoard}
+        onScanAccept={acceptScan}
         onUndo={undo}
         onRedo={redo}
         canUndo={canUndo}
@@ -70,9 +75,16 @@ function App() {
           },
         }}
       >
-        <Board board={board} selectedCell={selectedCell} hintCell={pendingHint?.index ?? null} onSelectCell={setSelectedCell} />
-        <NumberPad board={board} selectedCell={selectedCell} onSelect={setCellValue} />
+        <Board
+          board={board}
+          selectedCell={selectedCell}
+          hintCell={pendingHint?.index ?? null}
+          givenCells={givenCells}
+          onSelectCell={setSelectedCell}
+        />
+        <NumberPad board={board} selectedCell={selectedCell} givenCells={givenCells} onSelect={setCellValue} />
       </Box>
+      <LegendDrawer />
     </Box>
   );
 }
