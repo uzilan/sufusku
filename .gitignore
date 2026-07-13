@@ -38,3 +38,5 @@ tools/train-digits/.venv
 # Local scratch (scanner test photos etc.)
 temp/
 tools/train-digits/__pycache__/
+
+.superpowers/
