@@ -15,7 +15,7 @@ const ThemeToggle = () => {
   return (
     <IconButton
       onClick={() => setMode(resolved === 'dark' ? 'light' : 'dark')}
-      sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
+      sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
       aria-label={resolved === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       {resolved === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
@@ -60,7 +60,7 @@ const Header = ({
       variant="dense"
       sx={{
         position: 'relative',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         [landscapeQuery]: {
           flexDirection: 'column',
           justifyContent: 'flex-start',
@@ -80,14 +80,7 @@ const Header = ({
           color: 'secondary.main',
           letterSpacing: '0.02em',
           whiteSpace: 'nowrap',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
           [landscapeQuery]: {
-            position: 'static',
-            left: 'auto',
-            top: 'auto',
             transform: 'rotate(-90deg)',
             order: 2,
             flex: 1,
@@ -110,22 +103,22 @@ const Header = ({
           },
         }}
       >
-        <ThemeToggle />
         <IconButton
           onClick={onUndo}
           disabled={!canUndo}
-          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 3 } }}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 1 } }}
         >
           <UndoIcon />
         </IconButton>
         <IconButton
           onClick={onRedo}
           disabled={!canRedo}
-          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 4 } }}
+          sx={{ color: 'secondary.main', [landscapeQuery]: { order: 2 } }}
         >
           <RedoIcon />
         </IconButton>
-        <Box sx={{ [landscapeQuery]: { order: 1 } }}>
+        <ThemeToggle />
+        <Box sx={{ [landscapeQuery]: { order: 4 } }}>
           <HeaderMenu
             board={board}
             selectedCell={selectedCell}
