@@ -8,22 +8,23 @@ const CandidateRow = ({ candidates }: CandidateRowProps) => (
   <Box
     sx={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(9, 1fr)',
-      width: '100%',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gridTemplateRows: 'repeat(3, 1fr)',
       position: 'absolute',
-      bottom: { xs: 1.5, sm: 2 },
-      left: 0,
-      px: 0.15,
-      textAlign: 'center',
+      inset: 0,
     }}
   >
     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
       <Typography
         key={num}
         sx={{
-          fontSize: { xs: '6.5px', sm: '7.5px', md: '8px' },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: { xs: '9px', sm: '10px', md: '11px' },
           fontWeight: 700,
           color: candidates.has(num) ? 'primary.light' : 'transparent',
+          opacity: candidates.has(num) ? 0.35 : 1,
           lineHeight: 1,
         }}
       >
