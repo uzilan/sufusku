@@ -45,8 +45,8 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
       <Section title="Enter numbers">
         Tap a cell to select it, then type 1–9 on a keyboard or tap the number pad on your phone.
         Press 0, Backspace or Delete to clear a cell. Arrow keys move the selection. Cells filled
-        by a scan are read-only — the number pad's <strong>Clear</strong> button dims for them, the
-        same as it does for an already-empty cell.
+        by a scan or a generated puzzle are read-only — the number pad's <strong>Clear</strong>
+        button dims for them, the same as it does for an already-empty cell.
       </Section>
       <Section title="Cell colors">
         A red background
@@ -59,14 +59,20 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         <Swatch color="rgba(245, 158, 11, 0.6)" />
         marks the cell found by <strong>Hint</strong>. A gray background
         <Swatch color="rgba(148, 163, 184, 0.5)" />
-        marks a cell filled by a scan — it's read-only until you clear the board or scan again. The
-        <strong> Legend</strong> bar at the bottom of the screen has the full list.
+        marks a given — a cell filled by a scan or a generated puzzle — read-only until you clear
+        the board, scan again, or generate a new puzzle. The <strong>Legend</strong> bar at the
+        bottom of the screen has the full list.
       </Section>
       <Section title="Scan a puzzle">
         Open the menu and choose <strong>Scan puzzle</strong>, then allow camera access. Fill the
         frame with the puzzle and avoid glare. Hold steady — the photo is taken automatically when
         the grid is recognized. Prefer to use an existing photo? Tap the gallery icon in the
         top-left corner instead — it works the same way whether or not the camera is available.
+      </Section>
+      <Section title="Generate a puzzle">
+        No paper puzzle handy? Choose <strong>New puzzle</strong> from the menu and pick a
+        difficulty — Easy, Medium or Hard. The starting numbers are locked givens too, exactly
+        like a scanned puzzle.
       </Section>
       <Section title="Fix suspicious cells">
         After scanning, a review screen shows what was read. Amber cells
@@ -77,14 +83,20 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         replacing whatever was there.
       </Section>
       <Section title="Undo and redo">
-        Use the arrows in the header, or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z. Accepting a scan sets a
-        new baseline — undo only steps back through edits made after that scan, not past it.
+        Use the arrows in the header, or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z. Accepting a scan or
+        generating a new puzzle sets a new baseline — undo only steps back through edits made
+        after that point, not past it.
       </Section>
       <Section title="Solve cell, Hint and Clear all">
         With an empty cell selected, <strong>Solve cell</strong> fills it in when only one value
         can possibly go there. <strong>Hint</strong> finds a solvable cell for you and highlights
         it amber — tap it again (now labeled <strong>Reveal hint</strong>) to fill in its value.
         <strong> Clear all</strong> empties the whole board — undo brings it back.
+      </Section>
+      <Section title="Solving the puzzle">
+        When every cell is filled with no conflicts left, the board sweeps with a brief shimmer
+        and a "Solved!" banner appears — repeating every few seconds for as long as the board
+        stays solved.
       </Section>
     </DialogContent>
   </Dialog>

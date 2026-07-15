@@ -6,6 +6,7 @@ import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 import { hasSolution, DEFAULT_SOLVE_BUDGET } from '../sudoku/solver';
 import { findHintCell, type HintResult } from '../sudoku/hint';
 import HelpDialog from './HelpDialog';
+import NewPuzzleDialog from './NewPuzzleDialog';
 
 const ScanDialog = lazy(() => import('./ScanDialog'));
 
@@ -19,6 +20,7 @@ interface HeaderMenuProps {
   onSolveCell: (value: number) => void;
   onRevealHint: (index: number, value: number) => void;
   onScanAccept: (board: BoardState) => void;
+  onNewPuzzle: (board: BoardState) => void;
 }
 
 const HeaderMenu = ({
@@ -31,11 +33,13 @@ const HeaderMenu = ({
   onSolveCell,
   onRevealHint,
   onScanAccept,
+  onNewPuzzle,
 }: HeaderMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [scanOpen, setScanOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [newPuzzleOpen, setNewPuzzleOpen] = useState(false);
 
   const isCellEmpty = selectedCell !== null && board[selectedCell] === null;
 
@@ -95,6 +99,11 @@ const HeaderMenu = ({
     setScanOpen(true);
   };
 
+  const handleNewPuzzle = () => {
+    handleClose();
+    setNewPuzzleOpen(true);
+  };
+
   const handleHelp = () => {
     handleClose();
     setHelpOpen(true);
@@ -116,10 +125,16 @@ const HeaderMenu = ({
           {pendingHint !== null ? 'Reveal hint' : 'Hint'}
         </MenuItem>
         <MenuItem onClick={handleScan}>Scan puzzle</MenuItem>
+        <MenuItem onClick={handleNewPuzzle}>New puzzle</MenuItem>
         <MenuItem onClick={handleClearAll}>Clear all</MenuItem>
         <MenuItem onClick={handleHelp}>How to use</MenuItem>
       </Menu>
       <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <NewPuzzleDialog
+        open={newPuzzleOpen}
+        onClose={() => setNewPuzzleOpen(false)}
+        onGenerate={onNewPuzzle}
+      />
       <Portal>
         <Snackbar
           open={message !== null}

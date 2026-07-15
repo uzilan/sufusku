@@ -77,6 +77,7 @@ function App() {
         onSolveCell={setCellValue}
         onRevealHint={setCellValueAt}
         onScanAccept={acceptScan}
+        onNewPuzzle={acceptScan}
         onUndo={undo}
         onRedo={redo}
         canUndo={canUndo}

@@ -34,6 +34,7 @@ interface HeaderProps {
   onSolveCell: (value: number) => void;
   onRevealHint: (index: number, value: number) => void;
   onScanAccept: (board: BoardState) => void;
+  onNewPuzzle: (board: BoardState) => void;
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
@@ -50,6 +51,7 @@ const Header = ({
   onSolveCell,
   onRevealHint,
   onScanAccept,
+  onNewPuzzle,
   onUndo,
   onRedo,
   canUndo,
@@ -138,6 +140,7 @@ const Header = ({
             onSolveCell={onSolveCell}
             onRevealHint={onRevealHint}
             onScanAccept={onScanAccept}
+            onNewPuzzle={onNewPuzzle}
           />
         </Box>
       </Box>
