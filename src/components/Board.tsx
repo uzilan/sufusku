@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { getCellCoords } from '../sudoku/coords';
@@ -5,11 +6,14 @@ import { getCandidates, getConflictingCells, type Board as BoardState } from '..
 import type { BoardPalette } from '../theme';
 import Cell from './Cell';
 
+const SHIMMER_DURATION_MS = 1100;
+
 interface BoardProps {
   board: BoardState;
   selectedCell: number | null;
   hintCell: number | null;
   givenCells: Set<number>;
+  celebrate: number;
   onSelectCell: (index: number) => void;
 }
 
@@ -69,14 +73,23 @@ const getCellStyling = (
   return { bgcolor, borderColor, isConflicting };
 };
 
-const Board = ({ board, selectedCell, hintCell, givenCells, onSelectCell }: BoardProps) => {
+const Board = ({ board, selectedCell, hintCell, givenCells, celebrate, onSelectCell }: BoardProps) => {
   const conflictingCells = getConflictingCells(board);
   const theme = useTheme();
   const b = (theme.vars ?? theme).palette.board;
+  const [shimmering, setShimmering] = useState(false);
+
+  useEffect(() => {
+    if (celebrate === 0) return;
+    setShimmering(true);
+    const timer = window.setTimeout(() => setShimmering(false), SHIMMER_DURATION_MS);
+    return () => window.clearTimeout(timer);
+  }, [celebrate]);
 
   return (
     <Box
       sx={{
+        position: 'relative',
         width: '100%',
         maxWidth: '100vw',
         aspectRatio: '1',
@@ -101,6 +114,19 @@ const Board = ({ board, selectedCell, hintCell, givenCells, onSelectCell }: Boar
           height: 'min(calc(100vh - 16px), calc(100vw - 280px))',
           maxWidth: 'none',
         },
+        ...(shimmering && {
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            zIndex: 20,
+            pointerEvents: 'none',
+            background:
+              'linear-gradient(115deg, transparent 30%, rgba(6,182,212,0.35) 48%, rgba(99,102,241,0.35) 52%, transparent 70%)',
+            transform: 'translateX(-140%)',
+            animation: 'sufusku-shimmer-sweep 1.1s ease-in-out 1',
+          },
+        }),
       }}
     >
       {board.map((val, idx) => {

@@ -1,9 +1,11 @@
-import { Box } from '@mui/material';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Box, Portal, Snackbar } from '@mui/material';
 import Board from './components/Board';
 import Header from './components/Header';
 import LegendDrawer from './components/LegendDrawer';
 import NumberPad from './components/NumberPad';
 import { useSudokuBoard } from './hooks/useSudokuBoard';
+import { getConflictingCells } from './sudoku/logic';
 
 function App() {
   const {
@@ -22,6 +24,32 @@ function App() {
     setPendingHint,
     givenCells,
   } = useSudokuBoard();
+
+  const isSolved = useMemo(
+    () => board.every((v) => v !== null) && getConflictingCells(board).size === 0,
+    [board],
+  );
+  const wasSolvedRef = useRef(isSolved);
+  const [celebrate, setCelebrate] = useState(0);
+  const [showSolvedBanner, setShowSolvedBanner] = useState(false);
+
+  useEffect(() => {
+    if (isSolved && !wasSolvedRef.current) {
+      setCelebrate((c) => c + 1);
+      setShowSolvedBanner(true);
+    } else if (!isSolved) {
+      setShowSolvedBanner(false);
+    }
+    wasSolvedRef.current = isSolved;
+  }, [isSolved]);
+
+  // Repeat the shimmer at intervals for as long as the board stays solved —
+  // stops on its own once clearBoard/acceptScan (or any edit) makes it unsolved.
+  useEffect(() => {
+    if (!isSolved) return;
+    const id = window.setInterval(() => setCelebrate((c) => c + 1), 4000);
+    return () => window.clearInterval(id);
+  }, [isSolved]);
 
   return (
     <Box
@@ -80,11 +108,24 @@ function App() {
           selectedCell={selectedCell}
           hintCell={pendingHint?.index ?? null}
           givenCells={givenCells}
+          celebrate={celebrate}
           onSelectCell={setSelectedCell}
         />
         <NumberPad board={board} selectedCell={selectedCell} givenCells={givenCells} onSelect={setCellValue} />
       </Box>
       <LegendDrawer />
+      <Portal>
+        <Snackbar
+          open={showSolvedBanner}
+          autoHideDuration={4000}
+          onClose={() => setShowSolvedBanner(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={() => setShowSolvedBanner(false)} severity="success" variant="filled">
+            Solved!
+          </Alert>
+        </Snackbar>
+      </Portal>
     </Box>
   );
 }

@@ -177,6 +177,14 @@ const theme = createTheme({
         '::-webkit-scrollbar-thumb:hover': {
           background: 'var(--mui-palette-board-line)',
         },
+        '@keyframes sufusku-shimmer-sweep': {
+          to: { transform: 'translateX(140%)' },
+        },
+        '@media (prefers-reduced-motion: reduce)': {
+          '@keyframes sufusku-shimmer-sweep': {
+            to: { transform: 'translateX(-140%)' },
+          },
+        },
       },
     },
     MuiButton: {
