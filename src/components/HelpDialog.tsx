@@ -1,5 +1,7 @@
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
+import { getCellLegendItems } from './CellLegend';
 
 interface HelpDialogProps {
   open: boolean;
@@ -33,7 +35,12 @@ const Swatch = ({ color }: { color: string }) => (
   />
 );
 
-const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
+const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
+  const theme = useTheme();
+  const b = (theme.vars ?? theme).palette.board;
+  const cellLegendItems = getCellLegendItems(b);
+
+  return (
   <Dialog open={open} onClose={onClose} scroll="paper" maxWidth="sm" fullWidth>
     <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
       How to use
@@ -49,19 +56,19 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
         button dims for them, the same as it does for an already-empty cell.
       </Section>
       <Section title="Cell colors">
-        A red background
-        <Swatch color="rgba(239, 68, 68, 0.6)" />
-        marks a conflict: the same number appears twice in a row, column or box. A green
-        background
-        <Swatch color="rgba(34, 197, 94, 0.6)" />
-        marks an empty cell where only one number can go — a good place to play next. An amber
-        background
-        <Swatch color="rgba(245, 158, 11, 0.6)" />
-        marks the cell found by <strong>Hint</strong>. A gray background
-        <Swatch color="rgba(148, 163, 184, 0.5)" />
-        marks a given — a cell filled by a scan or a generated puzzle — read-only until you clear
-        the board, scan again, or generate a new puzzle. The <strong>Legend</strong> bar at the
-        bottom of the screen has the full list.
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25, mt: 0.5 }}>
+          {cellLegendItems.map(({ label, description, preview }) => (
+            <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              {preview}
+              <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                <strong>{label}</strong> —{' '}
+                <Box component="span" sx={{ color: 'text.secondary' }}>
+                  {description}
+                </Box>
+              </Typography>
+            </Box>
+          ))}
+        </Box>
       </Section>
       <Section title="Scan a puzzle">
         Open the menu and choose <strong>Scan puzzle</strong>, then allow camera access. Fill the
@@ -100,6 +107,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => (
       </Section>
     </DialogContent>
   </Dialog>
-);
+  );
+};
 
 export default HelpDialog;

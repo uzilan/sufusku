@@ -5,22 +5,9 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { getCellLegendItems } from './CellLegend';
 
 const landscapeQuery = '@media (max-height: 599.95px) and (orientation: landscape)';
-
-const Swatch = ({ color }: { color: string }) => (
-  <Box
-    component="span"
-    sx={{
-      display: 'inline-block',
-      width: 14,
-      height: 14,
-      bgcolor: color,
-      borderRadius: 0.5,
-      flexShrink: 0,
-    }}
-  />
-);
 
 // Persistent bar, collapsed by default; tap the handle to expand in place.
 // Bottom bar in portrait/desktop; right-side vertical strip in mobile landscape
@@ -30,12 +17,7 @@ const LegendDrawer = () => {
   const theme = useTheme();
   const b = (theme.vars ?? theme).palette.board;
 
-  const items: Array<{ label: string; description: string; color: string }> = [
-    { label: 'Conflict', description: 'Same number twice in a row, column or box.', color: b.conflictBorder },
-    { label: 'Given', description: 'Filled by a scan — read-only until cleared or rescanned.', color: b.givenBg },
-    { label: 'Solvable', description: 'Empty cell with only one number that can go there.', color: b.singleBg },
-    { label: 'Hint', description: 'The cell found by Hint.', color: b.hintBorder },
-  ];
+  const items = getCellLegendItems(b);
 
   return (
     <Box
@@ -130,9 +112,9 @@ const LegendDrawer = () => {
             },
           }}
         >
-          {items.map(({ label, description, color }) => (
+          {items.map(({ label, description, preview }) => (
             <Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Swatch color={color} />
+              {preview}
               <Typography sx={{ fontSize: '0.85rem' }}>
                 <strong>{label}</strong> — <Box component="span" sx={{ color: 'text.secondary' }}>{description}</Box>
               </Typography>
