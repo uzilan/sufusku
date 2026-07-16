@@ -40,6 +40,7 @@ const LegendDrawer = () => {
   return (
     <Box
       sx={{
+        position: 'relative',
         width: '100%',
         flexShrink: 0,
         zIndex: (t) => t.zIndex.appBar,
@@ -100,25 +101,32 @@ const LegendDrawer = () => {
       {open && (
         <Box
           sx={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: '100%',
             display: 'flex',
             flexDirection: 'column',
             gap: 1.25,
+            maxHeight: '50vh',
+            overflowY: 'auto',
+            bgcolor: 'background.paper',
+            borderTop: '1px solid',
+            borderColor: 'divider',
             px: 2,
-            pb: 2,
+            py: 2,
             [landscapeQuery]: {
-              position: 'absolute',
+              left: 'auto',
               right: '100%',
-              top: 0,
               bottom: 0,
+              top: 0,
               width: 'max-content',
               maxWidth: '33vw',
-              bgcolor: 'background.paper',
+              maxHeight: 'none',
+              borderTop: 'none',
               borderLeft: '1px solid',
               borderColor: 'divider',
-              overflowY: 'auto',
               justifyContent: 'center',
-              px: 2,
-              py: 2,
             },
           }}
         >
