@@ -1,7 +1,7 @@
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
-import { getCellLegendItems } from './CellLegend';
+import { getCellLegendItems, MiniCell } from './CellLegend';
 
 interface HelpDialogProps {
   open: boolean;
@@ -17,22 +17,6 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
       {children}
     </Typography>
   </Box>
-);
-
-// Inline swatch matching an in-app cell highlight color
-const Swatch = ({ color }: { color: string }) => (
-  <Box
-    component="span"
-    sx={{
-      display: 'inline-block',
-      width: 12,
-      height: 12,
-      bgcolor: color,
-      borderRadius: 0.5,
-      verticalAlign: 'baseline',
-      mx: 0.5,
-    }}
-  />
 );
 
 const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
@@ -82,12 +66,16 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
         like a scanned puzzle.
       </Section>
       <Section title="Fix suspicious cells">
-        After scanning, a review screen shows what was read. Amber cells
-        <Swatch color="warning.main" />
-        are ones the scanner is unsure about, or values that clash with another cell. Tap any cell
-        to correct or clear it, and check the rest too — a confident scan can still be wrong.
-        <strong> Retake</strong> scans again; <strong>Accept</strong> puts the result on the board,
-        replacing whatever was there.
+        After scanning, a review screen shows what was read.
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, my: 1 }}>
+          <MiniCell bg="warning.main" textColor="warning.contrastText" value={6} />
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Cells the scanner is unsure about, or values that clash with another cell.
+          </Typography>
+        </Box>
+        Tap any cell to correct or clear it, and check the rest too — a confident scan can still
+        be wrong. <strong>Retake</strong> scans again; <strong>Accept</strong> puts the result on
+        the board, replacing whatever was there.
       </Section>
       <Section title="Undo and redo">
         Use the arrows in the header, or Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z. Accepting a scan or
