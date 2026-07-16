@@ -88,11 +88,6 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
         it amber — tap it again (now labeled <strong>Reveal hint</strong>) to fill in its value.
         <strong> Clear all</strong> empties the whole board — undo brings it back.
       </Section>
-      <Section title="Solving the puzzle">
-        When every cell is filled with no conflicts left, the board sweeps with a brief shimmer
-        and a "Solved!" banner appears — repeating every few seconds for as long as the board
-        stays solved.
-      </Section>
     </DialogContent>
   </Dialog>
   );
