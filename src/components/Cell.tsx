@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import CandidateRow from './CandidateRow';
+import CandidateGrid from './CandidateGrid';
 
 interface CellProps {
   row: number;
@@ -61,7 +61,7 @@ const Cell = ({ row, col, value, isSelected, isConflicting, isGiven, bgcolor, bo
         </Typography>
       ) : null}
 
-      {!hasValue && <CandidateRow candidates={candidates} />}
+      {!hasValue && <CandidateGrid candidates={candidates} />}
     </Box>
   );
 };

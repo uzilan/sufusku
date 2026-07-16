@@ -35,7 +35,7 @@ export const MiniCell = ({
       color: textColor ?? 'secondary.main',
     }}
   >
-    {/* CandidateRow's Typography line-height is tuned for real (larger) board cells and
+    {/* CandidateGrid's Typography line-height is tuned for real (larger) board cells and
         overflows a 30px box, so a candidate digit here is a lightweight positioned span
         instead — same row/col math (row ⌊(n-1)/3⌋, col (n-1)%3), no line-height baggage. */}
     {candidate !== undefined ? (
@@ -149,5 +149,10 @@ export const getCellLegendItems = (b: BoardPalette): CellLegendItem[] => [
     label: 'Selected',
     description: 'The cell you last tapped or navigated to.',
     preview: <MiniCell bg={b.selectionBg} outline="#06b6d4" />,
+  },
+  {
+    label: 'Highlighted',
+    description: 'Shares the same number as the selected cell.',
+    preview: <MiniCell bg={b.shareTint} value={6} />,
   },
 ];

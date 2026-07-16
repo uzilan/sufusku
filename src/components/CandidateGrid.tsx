@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
 
-interface CandidateRowProps {
+interface CandidateGridProps {
   candidates: Set<number>;
 }
 
-const CandidateRow = ({ candidates }: CandidateRowProps) => (
+const CandidateGrid = ({ candidates }: CandidateGridProps) => (
   <Box
     sx={{
       display: 'grid',
@@ -34,4 +34,4 @@ const CandidateRow = ({ candidates }: CandidateRowProps) => (
   </Box>
 );
 
-export default CandidateRow;
+export default CandidateGrid;

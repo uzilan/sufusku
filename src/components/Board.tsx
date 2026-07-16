@@ -64,9 +64,9 @@ const getCellStyling = (
         borderColor = '#06b6d4';
         if (!isSingleCandidate && !isGiven) bgcolor = b.selectionBg;
       }
-    } else if (!isConflicting && !isSingleCandidate && !isHinted && !isGiven) {
+    } else if (!isConflicting && !isSingleCandidate && !isHinted) {
       if (sharesValue) bgcolor = b.shareTint;
-      else if (isRelated) bgcolor = b.relatedTint;
+      else if (isRelated && !isGiven) bgcolor = b.relatedTint;
     }
   }
 
