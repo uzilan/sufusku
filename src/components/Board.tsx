@@ -105,8 +105,8 @@ const Board = ({ board, selectedCell, hintCell, givenCells, celebrate, onSelectC
           maxWidth: '460px',
         },
         '@media (min-width: 600px) and (min-height: 600px)': {
-          width: 'min(calc(100vh - 81px), calc(100vw - 260px))',
-          height: 'min(calc(100vh - 81px), calc(100vw - 260px))',
+          width: 'min(calc(100vh - 113px), calc(100vw - 260px))',
+          height: 'min(calc(100vh - 113px), calc(100vw - 260px))',
           maxWidth: 'none',
         },
         '@media (max-height: 599.95px) and (orientation: landscape)': {

@@ -2,6 +2,8 @@ import { Box } from '@mui/material';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import { getCandidates, type Board as BoardState } from '../sudoku/logic';
 
+const portraitQuery = '@media (max-width: 599.95px) and (orientation: portrait)';
+
 interface NumberPadProps {
   board: BoardState;
   selectedCell: number | null;
@@ -25,11 +27,13 @@ const NumberPad = ({ board, selectedCell, givenCells, onSelect }: NumberPadProps
         gridTemplateRows: 'repeat(3, 1fr) auto',
         gap: 1,
         width: '100%',
-        maxWidth: '260px',
+        maxWidth: '220px',
         flexShrink: 0,
-        '@media (max-width: 599.95px) and (orientation: portrait)': {
+        [portraitQuery]: {
           display: 'grid',
-          maxWidth: '200px',
+          maxWidth: '240px',
+          gridTemplateColumns: 'repeat(3, 1fr) 0.7fr',
+          gridTemplateRows: 'repeat(3, 1fr)',
         },
         '@media (max-height: 599.95px) and (orientation: landscape)': {
           display: 'grid',
@@ -88,10 +92,29 @@ const NumberPad = ({ board, selectedCell, givenCells, onSelect }: NumberPadProps
           fontSize: '0.95rem',
           color: 'text.secondary',
           opacity: isClearDisabled ? 0.4 : 1,
+          [portraitQuery]: {
+            gridColumn: '4',
+            gridRow: '1 / -1',
+            flexDirection: 'column',
+            gap: 0.5,
+            py: 0,
+            fontSize: '0.7rem',
+          },
         }}
       >
         <BackspaceOutlinedIcon fontSize="small" />
-        Clear
+        <Box
+          component="span"
+          sx={{
+            display: 'none',
+            [portraitQuery]: { display: 'inline', writingMode: 'vertical-rl', transform: 'rotate(180deg)' },
+          }}
+        >
+          Clear
+        </Box>
+        <Box component="span" sx={{ [portraitQuery]: { display: 'none' } }}>
+          Clear
+        </Box>
       </Box>
     </Box>
   );

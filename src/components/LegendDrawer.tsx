@@ -40,15 +40,15 @@ const LegendDrawer = () => {
   return (
     <Box
       sx={{
-        position: 'fixed',
-        left: 0,
-        right: 0,
-        bottom: 0,
+        width: '100%',
+        flexShrink: 0,
         zIndex: (t) => t.zIndex.appBar,
         bgcolor: 'background.paper',
         borderTop: '1px solid',
         borderColor: 'divider',
         [landscapeQuery]: {
+          position: 'fixed',
+          width: 'auto',
           left: 'auto',
           top: 0,
           bottom: 0,

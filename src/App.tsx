@@ -58,11 +58,9 @@ function App() {
         flexDirection: 'column',
         minHeight: '100vh',
         bgcolor: 'background.default',
-        pb: '32px',
         '@media (max-height: 599.95px) and (orientation: landscape)': {
           flexDirection: 'row',
           height: '100vh',
-          pb: 0,
           pr: '32px',
         },
       }}
