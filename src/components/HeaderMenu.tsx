@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import type { MouseEvent } from 'react';
 import { Alert, IconButton, Menu, MenuItem, Portal, Snackbar } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -9,6 +9,8 @@ import HelpDialog from './HelpDialog';
 import NewPuzzleDialog from './NewPuzzleDialog';
 
 const ScanDialog = lazy(() => import('./ScanDialog'));
+
+const SEEN_HELP_KEY = 'sufusku-seen-help';
 
 interface HeaderMenuProps {
   board: BoardState;
@@ -39,7 +41,16 @@ const HeaderMenu = ({
   const [message, setMessage] = useState<string | null>(null);
   const [scanOpen, setScanOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [isWelcome, setIsWelcome] = useState(false);
   const [newPuzzleOpen, setNewPuzzleOpen] = useState(false);
+
+  // First-time visitor: auto-open "How to use" once, then never again.
+  useEffect(() => {
+    if (localStorage.getItem(SEEN_HELP_KEY)) return;
+    localStorage.setItem(SEEN_HELP_KEY, '1');
+    setIsWelcome(true);
+    setHelpOpen(true);
+  }, []);
 
   const isCellEmpty = selectedCell !== null && board[selectedCell] === null;
 
@@ -106,6 +117,7 @@ const HeaderMenu = ({
 
   const handleHelp = () => {
     handleClose();
+    setIsWelcome(false);
     setHelpOpen(true);
   };
 
@@ -129,7 +141,7 @@ const HeaderMenu = ({
         <MenuItem onClick={handleClearAll}>Clear all</MenuItem>
         <MenuItem onClick={handleHelp}>How to use</MenuItem>
       </Menu>
-      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} title={isWelcome ? 'Welcome to Sufusku!' : 'How to use'} />
       <NewPuzzleDialog
         open={newPuzzleOpen}
         onClose={() => setNewPuzzleOpen(false)}

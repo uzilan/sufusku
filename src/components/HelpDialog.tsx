@@ -6,6 +6,7 @@ import { getCellLegendItems, MiniCell } from './CellLegend';
 interface HelpDialogProps {
   open: boolean;
   onClose: () => void;
+  title?: string;
 }
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -19,7 +20,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </Box>
 );
 
-const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
+const HelpDialog = ({ open, onClose, title = 'How to use' }: HelpDialogProps) => {
   const theme = useTheme();
   const b = (theme.vars ?? theme).palette.board;
   const cellLegendItems = getCellLegendItems(b);
@@ -27,12 +28,17 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   return (
   <Dialog open={open} onClose={onClose} scroll="paper" maxWidth="sm" fullWidth>
     <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
-      How to use
+      {title}
       <IconButton onClick={onClose} sx={{ color: 'secondary.main' }}>
         <CloseIcon />
       </IconButton>
     </DialogTitle>
     <DialogContent dividers>
+      <Typography variant="body2" sx={{ color: 'text.primary', mb: 2.5 }}>
+        Sufusku is a Sudoku helper: enter your own puzzle — by hand, by scanning a printed one, or
+        by generating a new one — and it tracks candidates, flags conflicts, and highlights cells
+        with only one possible value as you go.
+      </Typography>
       <Section title="Enter numbers">
         Tap a cell to select it, then type 1–9 on a keyboard or tap the number pad on your phone.
         Press 0, Backspace or Delete to clear a cell. Arrow keys move the selection. Cells filled
